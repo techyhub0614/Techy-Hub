@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechyHub - Tech E-Commerce</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/script.js"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <nav class="navbar">
+        <div class="logo">
+    <img src="images/techhublogo.jpg" alt="TechyHub Logo" style="height:38px;width:38px;object-fit:contain;border-radius:8px;vertical-align:middle;margin-right:8px;">TechyHub
+</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="wishlist.html">Wishlist ❤️</a></li>
+            <li><a href="cart.html">Cart 🛒
+                <span id="cartCount" style="background:red;color:white;border-radius:50%;padding:2px 7px;font-size:12px;">0</span>
+            </a></li>
+        </ul>
+        <div class="nav-auth">
+            <a href="profile.html" class="nav-profile-btn">👤 Profile</a>
+            <a href="login.html" class="nav-login-btn">Login</a>
+        </div>
+        <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+    </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Authentic Tech Products at Affordable Prices</h1>
+        <p>
+            Discover the latest tech — Laptops, Smartphones, Gaming gear, Smart devices, and Accessories from brands you trust.
+        </p>
+        <div class="hero-buttons">
+            <a href="products.html" class="btn-primary">Shop Now</a>
+            <a href="about.html" class="btn-secondary">Learn More</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800"
+             alt="Tech Products">
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+    <h2>Featured Categories</h2>
+    <div class="category-grid">
+
+        <div class="category-card">
+            <h3>💻 Laptops</h3>
+            <p>Powerful devices designed to keep up with work, study, and everything in between.</p>
+        </div>
+
+        <div class="category-card">
+            <h3>📱 Smartphones</h3>
+            <p>Latest phones from top brands.</p>
+        </div>
+
+        <div class="category-card">
+            <h3>🎮 Gaming</h3>
+            <p>Gaming accessories and consoles.</p>
+        </div>
+
+        <div class="category-card">
+            <h3>⌚ Smart Watches</h3>
+            <p>Stay on top of your wellness, track your health and fitness effortlessly.</p>
+        </div>
+
+        <div class="category-card">
+            <h3>🎧 Audio</h3>
+            <p>Headphones and speakers.</p>
+        </div>
+
+        <div class="category-card">
+            <h3>🖥 Accessories</h3>
+            <p>Essential gear and accessories — keyboards, mouse, and more for every setup.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="featured-products">
+    <h2>Featured Products</h2>
+    <div class="product-grid">
+
+        <div class="product-card">
+            <img src="images/laptop.jpg" alt="Laptop">
+            <h3>Gaming Laptop</h3>
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>₱45,999</p>
+            <div class="quantity-box">
+                <button onclick="decreaseQty(this)">-</button>
+                <span class="qty">1</span>
+                <button onclick="increaseQty(this)">+</button>
+            </div>
+            <button onclick="addToCartWithQty(this,'Gaming Laptop',45999)">Add to Cart</button>
+            <button onclick="addToWishlist('Gaming Laptop')">❤️ Wishlist</button>
+        </div>
+
+        <div class="product-card">
+            <img src="images/headphones.jpg" alt="Headphones">
+            <h3>Wireless Headphones</h3>
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>₱2,499</p>
+            <div class="quantity-box">
+                <button onclick="decreaseQty(this)">-</button>
+                <span class="qty">1</span>
+                <button onclick="increaseQty(this)">+</button>
+            </div>
+            <button onclick="addToCartWithQty(this,'Wireless Headphones',2499)">Add to Cart</button>
+            <button onclick="addToWishlist('Wireless Headphones')">❤️ Wishlist</button>
+        </div>
+
+        <div class="product-card">
+            <img src="images/smartwatch.jpg" alt="Smart Watch">
+            <h3>Smart Watch</h3>
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>₱5,999</p>
+            <div class="quantity-box">
+                <button onclick="decreaseQty(this)">-</button>
+                <span class="qty">1</span>
+                <button onclick="increaseQty(this)">+</button>
+            </div>
+            <button onclick="addToCartWithQty(this,'Smart Watch',5999)">Add to Cart</button>
+            <button onclick="addToWishlist('Smart Watch')">❤️ Wishlist</button>
+        </div>
+
+        <div class="product-card">
+            <img src="images/keyboard.jpg" alt="Keyboard">
+            <h3>Mechanical Keyboard</h3>
+            <div class="rating">⭐⭐⭐⭐⭐</div>
+            <p>₱2,999</p>
+            <div class="quantity-box">
+                <button onclick="decreaseQty(this)">-</button>
+                <span class="qty">1</span>
+                <button onclick="increaseQty(this)">+</button>
+            </div>
+            <button onclick="addToCartWithQty(this,'Mechanical Keyboard',2999)">Add to Cart</button>
+            <button onclick="addToWishlist('Mechanical Keyboard')">❤️ Wishlist</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+    <h2>Customer Reviews</h2>
+    <div class="testimonial-card">
+        <p>"Great products and fast delivery!"</p>
+        <h4>- Maria Santos</h4>
+    </div>
+    <div class="testimonial-card">
+        <p>"Affordable and authentic gadgets."</p>
+        <h4>- John Cruz</h4>
+    </div>
+</section>
+
+<!-- TRUSTED BRANDS -->
+<section class="brands">
+    <h2>Trusted Brands</h2>
+    <div class="brands-grid">
+        <div>Apple</div>
+        <div>Samsung</div>
+        <div>ASUS</div>
+        <div>Acer</div>
+        <div>Lenovo</div>
+        <div>Logitech</div>
+    </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why-us">
+    <h2>Why Choose TechyHub?</h2>
+    <div class="features-grid">
+
+        <div class="feature-card">
+            <h3>✔ Product Authenticity</h3>
+            <p>Guaranteed genuine products.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>✔ Accessible Platform</h3>
+            <p>Easy shopping experience.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>✔ Knowledgeable Support</h3>
+            <p>Friendly customer assistance.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>✔ Affordable Deals</h3>
+            <p>Competitive pricing every day.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>✔ Key Convenience</h3>
+            <p>Shop anywhere, anytime.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+    <h2>Subscribe to Our Newsletter</h2>
+    <input type="email" id="newsletterEmail" placeholder="Enter Email">
+    <button onclick="subscribeNewsletter()">Subscribe</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 TechyHub. All Rights Reserved.</p>
+</footer>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal" id="productModal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p id="modalPrice"></p>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- SCROLL TO TOP BUTTON -->
+<button id="topBtn" onclick="scrollToTop()">↑</button>
+
+<!-- CHATBOT WIDGET -->
+<div class="chatbot" id="chatbot">
+    <div class="chatbot-header">
+        <span>💬 TechyHub Assistant</span>
+        <button class="chatbot-minimize-btn" id="chatbotToggle" onclick="toggleChatbot()" title="Minimize">−</button>
+    </div>
+    <div class="chatbot-body" id="chatMessages"></div>
+    <div class="chatbot-input-area" id="chatbotInputArea">
+        <input type="text" id="chatInput" placeholder="Ask...">
+        <button onclick="sendChat()">➤</button>
+    </div>
+</div>
+
+</body>
+</html>

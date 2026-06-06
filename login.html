@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechyHub - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script defer src="js/script.js"></script>
+    <style>
+        /* ── LOGIN PAGE OVERRIDE ── */
+        body.login-page {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: #f0f4ff;
+            font-family: 'DM Sans', sans-serif;
+            overflow-y: auto;
+            padding-top: 90px;
+            padding-bottom: 40px;
+        }
+
+        /* login navbar */
+        .login-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 6%;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 2px 12px rgba(37,99,235,0.07);
+        }
+        .login-nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #2563eb;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .login-nav-home {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            transition: background .2s, color .2s;
+        }
+        .login-nav-home:hover {
+            background: #e5e7eb;
+            color: #2563eb;
+        }
+
+        /* dark mode navbar */
+        body.dark-mode .login-nav {
+            background: rgba(10,15,35,0.8);
+            border-bottom: 1px solid rgba(120,80,255,0.2);
+            box-shadow: 0 0 20px rgba(98,0,255,0.15);
+        }
+        body.dark-mode .login-nav-logo { color: #a78bfa; }
+        body.dark-mode .login-nav-home {
+            background: rgba(255,255,255,0.07);
+            color: #cbd5e1;
+            border: 1px solid rgba(120,80,255,0.2);
+        }
+        body.dark-mode .login-nav-home:hover {
+            background: rgba(124,58,237,0.2);
+            color: #a78bfa;
+        }
+
+        /* animated background blobs */
+        body.login-page::before,
+        body.login-page::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        body.login-page::before {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, #bfdbfe, #93c5fd);
+            top: -120px;
+            left: -120px;
+            animation: blobMove1 8s ease-in-out infinite alternate;
+        }
+        body.login-page::after {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, #c7d2fe, #a5b4fc);
+            bottom: -100px;
+            right: -100px;
+            animation: blobMove2 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes blobMove1 {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(40px, 40px) scale(1.08); }
+        }
+        @keyframes blobMove2 {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(-30px, -30px) scale(1.06); }
+        }
+
+        /* card */
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            animation: cardIn 0.55s cubic-bezier(.22,.68,0,1.2) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 24px;
+            padding: 44px 40px 36px;
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.04),
+                0 12px 40px rgba(37,99,235,0.12),
+                0 0 0 1px rgba(255,255,255,0.5) inset;
+        }
+
+        /* brand */
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .login-brand-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: -0.5px;
+        }
+        .login-brand-dot {
+            width: 8px;
+            height: 8px;
+            background: #2563eb;
+            border-radius: 50%;
+            margin-bottom: 2px;
+        }
+
+        /* heading */
+        .login-card h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 6px;
+            letter-spacing: -0.4px;
+        }
+        .login-card .login-sub {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0 0 28px;
+        }
+
+        /* label + input groups */
+        .login-field {
+            margin-bottom: 18px;
+        }
+        .login-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 7px;
+            letter-spacing: 0.1px;
+        }
+        .login-input-wrap {
+            position: relative;
+        }
+        .login-input-wrap .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+        .login-field input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-family: 'DM Sans', sans-serif;
+            color: #0f172a;
+            background: #fff;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+            box-sizing: border-box;
+        }
+        .login-field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        }
+        .login-field input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* password toggle */
+        .pw-toggle {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            opacity: 0.45;
+            padding: 0;
+            line-height: 1;
+            transition: opacity .2s;
+        }
+        .pw-toggle:hover { opacity: 0.75; }
+
+        /* forgot password */
+        .login-forgot {
+            display: block;
+            text-align: right;
+            font-size: 12.5px;
+            color: #2563eb;
+            text-decoration: none;
+            margin-top: -10px;
+            margin-bottom: 22px;
+            font-weight: 500;
+        }
+        .login-forgot:hover { text-decoration: underline; }
+
+        /* submit button */
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background .2s, transform .15s, box-shadow .2s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+            letter-spacing: 0.1px;
+        }
+        .login-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.38);
+        }
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* divider */
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        /* footer links */
+        .login-footer {
+            text-align: center;
+            font-size: 13.5px;
+            color: #64748b;
+            margin-top: 20px;
+        }
+        .login-footer a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-footer a:hover { text-decoration: underline; }
+
+        .login-back {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .login-back:hover { color: #2563eb; }
+
+        /* ── DARK MODE ── */
+        body.dark-mode.login-page {
+            background: #050816;
+        }
+        body.dark-mode.login-page::before {
+            background: radial-gradient(circle, #1e1b4b, #312e81);
+            opacity: 0.6;
+        }
+        body.dark-mode.login-page::after {
+            background: radial-gradient(circle, #1e3a8a, #1d4ed8);
+            opacity: 0.4;
+        }
+        body.dark-mode .login-card {
+            background: rgba(15,20,40,0.85);
+            border: 1px solid rgba(120,80,255,0.25);
+            box-shadow:
+                0 0 0 1px rgba(120,80,255,0.1) inset,
+                0 12px 40px rgba(110,0,255,0.2);
+        }
+        body.dark-mode .login-brand-logo { color: #a78bfa; }
+        body.dark-mode .login-brand-dot  { background: #a78bfa; }
+        body.dark-mode .login-card h1    { color: #f1f5f9; }
+        body.dark-mode .login-card .login-sub { color: #94a3b8; }
+        body.dark-mode .login-field label { color: #cbd5e1; }
+        body.dark-mode .login-field input {
+            background: rgba(15,20,40,0.9);
+            border-color: rgba(120,80,255,0.3);
+            color: #f1f5f9;
+        }
+        body.dark-mode .login-field input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+        }
+        body.dark-mode .login-field input::placeholder { color: #475569; }
+        body.dark-mode .login-forgot { color: #a78bfa; }
+        body.dark-mode .login-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 4px 14px rgba(124,58,237,0.4);
+        }
+        body.dark-mode .login-btn:hover {
+            background: linear-gradient(135deg, #4338ca, #6d28d9);
+            box-shadow: 0 6px 20px rgba(124,58,237,0.55);
+        }
+        body.dark-mode .login-divider { color: #334155; }
+        body.dark-mode .login-divider::before,
+        body.dark-mode .login-divider::after { background: #1e293b; }
+        body.dark-mode .login-footer { color: #64748b; }
+        body.dark-mode .login-footer a { color: #a78bfa; }
+        body.dark-mode .login-back { color: #475569; }
+        body.dark-mode .login-back:hover { color: #a78bfa; }
+    </style>
+</head>
+<body class="login-page">
+
+<nav class="login-nav">
+    <a href="index.html" class="login-nav-logo">TechyHub</a>
+    <a href="index.html" class="login-nav-home">🏠 Home</a>
+</nav>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- Brand -->
+        <div class="login-brand">
+            <span class="login-brand-logo">TechyHub</span>
+            <span class="login-brand-dot"></span>
+        </div>
+
+        <h1>Welcome back</h1>
+        <p class="login-sub">Sign in to your account to continue</p>
+
+        <!-- Email -->
+        <div class="login-field">
+            <label for="loginEmail">Email address</label>
+            <div class="login-input-wrap">
+                <span class="input-icon">✉️</span>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                >
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="login-field">
+            <label for="loginPassword">Password</label>
+            <div class="login-input-wrap">
+                <span class="input-icon">🔒</span>
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                >
+                <button class="pw-toggle" type="button" onclick="togglePassword()" id="pwToggleBtn" title="Show/hide password">👁</button>
+            </div>
+        </div>
+
+        <a href="#" class="login-forgot">Forgot password?</a>
+
+        <button class="login-btn" onclick="loginUser()">Sign in</button>
+
+        <div class="login-divider">or</div>
+
+        <div class="login-footer">
+            Don't have an account? <a href="register.html">Create one</a>
+        </div>
+
+        <a href="index.html" class="login-back">← Back to Home</a>
+
+    </div>
+</div>
+
+<script>
+    // Apply saved dark mode on this page too
+    if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+    }
+
+    // Password show/hide toggle
+    function togglePassword() {
+        const input = document.getElementById("loginPassword");
+        const btn = document.getElementById("pwToggleBtn");
+        if (input.type === "password") {
+            input.type = "text";
+            btn.textContent = "🙈";
+        } else {
+            input.type = "password";
+            btn.textContent = "👁";
+        }
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") loginUser();
+    });
+</script>
+
+</body>
+</html>

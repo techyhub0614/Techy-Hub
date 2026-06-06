@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechyHub - Shopping Cart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/script.js"></script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="logo">
+    <img src="images/techhublogo.jpg" alt="TechyHub Logo" style="height:38px;width:38px;object-fit:contain;border-radius:8px;vertical-align:middle;margin-right:8px;">TechyHub
+</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="wishlist.html">Wishlist ❤️</a></li>
+            <li><a href="cart.html" class="active">Cart 🛒 <span id="cartCount" style="background:red;color:white;border-radius:50%;padding:2px 7px;font-size:12px;">0</span></a></li>
+        </ul>
+        <div class="nav-auth">
+            <a href="profile.html" class="nav-profile-btn">👤 Profile</a>
+            <a href="login.html" class="nav-login-btn">Login</a>
+        </div>
+        <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+    </nav>
+</header>
+
+<section class="cart-page">
+
+    <h1>Your Shopping Cart</h1>
+
+    <div id="cartItems" class="cart-container">
+        <!-- JavaScript will load cart items here -->
+    </div>
+
+    <div class="cart-summary">
+
+        <h2>Order Summary</h2>
+
+        <p>Total: <span id="cartTotal">₱0.00</span></p>
+
+        <button class="checkout-btn" onclick="checkout()">
+            Proceed to Checkout
+        </button>
+
+        <button class="clear-btn" onclick="clearCart()">
+            Clear Cart
+        </button>
+
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2026 TechyHub. All Rights Reserved.</p>
+</footer>
+
+<button id="topBtn" onclick="scrollToTop()">↑</button>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechyHub - Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/script.js"></script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="logo">
+    <img src="images/techhublogo.jpg" alt="TechyHub Logo" style="height:38px;width:38px;object-fit:contain;border-radius:8px;vertical-align:middle;margin-right:8px;">TechyHub
+</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="wishlist.html">Wishlist ❤️</a></li>
+            <li><a href="cart.html">Cart 🛒 <span id="cartCount" style="background:red;color:white;border-radius:50%;padding:2px 7px;font-size:12px;">0</span></a></li>
+        </ul>
+        <div class="nav-auth">
+            <a href="profile.html" class="nav-profile-btn active">👤 Profile</a>
+            <a href="login.html" class="nav-login-btn">Login</a>
+        </div>
+        <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+    </nav>
+</header>
+
+<section class="profile-page">
+
+    <div class="profile-card">
+
+        <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Profile Picture"
+            class="profile-image"
+        >
+
+        <h2 id="profileName">Guest User</h2>
+        <p id="profileEmail">Not logged in</p>
+
+        <div class="profile-stats">
+
+            <div class="stat-box">
+                <h2 id="orderCount">0</h2>
+                <p>Orders</p>
+            </div>
+
+            <div class="stat-box">
+                <h2 id="wishlistCount">0</h2>
+                <p>Wishlist</p>
+            </div>
+
+            <div class="stat-box">
+                <h2>Gold</h2>
+                <p>Membership</p>
+            </div>
+
+        </div>
+
+        <div class="profile-actions">
+
+            <button class="profile-btn">
+                Edit Profile
+            </button>
+
+            <button class="profile-btn" onclick="showOrderHistory()">
+                Order History
+            </button>
+
+            <button class="logout-btn" onclick="logoutUser()">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ORDER HISTORY MODAL -->
+<div class="modal" id="orderHistoryModal" style="display:none;">
+    <div class="modal-content" style="max-width:650px;width:90%;max-height:80vh;overflow-y:auto;">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2 style="margin:0;">🧾 Order History</h2>
+            <button
+                onclick="closeOrderHistory()"
+                style="background:#e5e7eb;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:16px;"
+            >✕ Close</button>
+        </div>
+
+        <div id="orderHistoryBody"></div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 TechyHub. All Rights Reserved.</p>
+</footer>
+
+<button id="topBtn" onclick="scrollToTop()">↑</button>
+
+</body>
+</html>
