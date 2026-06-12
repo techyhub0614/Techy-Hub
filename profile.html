@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechyHub - Profile</title>
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================
+   PROFILE PAGE — matches products/index/login design
+================================================ */
+:root {
+  --bg-deep:     #050816;
+  --bg-card:     rgba(10,15,40,0.85);
+  --border-glow: rgba(99,102,241,0.28);
+  --accent:      #6366f1;
+  --accent2:     #38bdf8;
+  --accent3:     #a78bfa;
+  --text:        #e2e8f0;
+  --muted:       #64748b;
+  --danger:      #ef4444;
+  --success:     #22c55e;
+  --font-display:"Space Grotesk", sans-serif;
+  --font-body:   "Inter", sans-serif;
+  --radius:      16px;
+  --transition:  .25s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:#050816; }
+::-webkit-scrollbar-thumb { background:var(--accent); border-radius:3px; }
+
+/* ── NAVBAR ── */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 5%;
+  background: rgba(5,8,22,.9);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(99,102,241,.18);
+  position: sticky; top:0; z-index:200;
+  box-shadow: 0 0 20px rgba(99,102,241,.1);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--accent3);
+  letter-spacing: -.5px;
+  text-shadow: 0 0 12px rgba(167,139,250,.4);
+  display: flex; align-items:center; gap:8px;
+}
+.nav-links { display:flex; list-style:none; gap:24px; }
+.nav-links a {
+  text-decoration:none; color:#94a3b8;
+  font-size:.88rem; font-weight:500;
+  transition: color var(--transition);
+}
+.nav-links a:hover { color:var(--accent3); }
+.nav-auth { display:flex; align-items:center; gap:10px; }
+.nav-profile-btn, .nav-login-btn {
+  text-decoration:none; padding:8px 16px;
+  border-radius:8px; font-weight:600; font-size:.82rem;
+  transition: all var(--transition);
+}
+.nav-profile-btn {
+  background: rgba(99,102,241,.18);
+  color: var(--accent3);
+  border: 1px solid rgba(99,102,241,.35);
+}
+.nav-login-btn {
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  color: white;
+  box-shadow: 0 0 12px rgba(124,58,237,.4);
+}
+.nav-login-btn:hover { opacity:.88; }
+#darkModeBtn {
+  background:none; border:1px solid rgba(99,102,241,.3);
+  color:var(--text); width:36px; height:36px;
+  border-radius:8px; cursor:pointer; font-size:1rem;
+  transition:all var(--transition);
+}
+#darkModeBtn:hover { background:rgba(99,102,241,.15); }
+
+/* ── PAGE BACKGROUND ── */
+.profile-bg {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  overflow: hidden;
+  background: url('images/hero-bg.jpg') center/cover no-repeat;
+}
+/* dark overlay */
+.profile-bg::before {
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(135deg,
+    rgba(5,8,22,.9) 0%,
+    rgba(20,8,50,.8) 50%,
+    rgba(5,8,22,.9) 100%);
+}
+/* glow blobs */
+.profile-blob1 {
+  position:absolute; width:480px; height:480px;
+  background:radial-gradient(#7c3aed,transparent);
+  filter:blur(130px); opacity:.25;
+  top:-100px; right:-100px; pointer-events:none;
+}
+.profile-blob2 {
+  position:absolute; width:360px; height:360px;
+  background:radial-gradient(#2563eb,transparent);
+  filter:blur(110px); opacity:.18;
+  bottom:-80px; left:-80px; pointer-events:none;
+}
+.profile-blob3 {
+  position:absolute; width:300px; height:300px;
+  background:radial-gradient(#38bdf8,transparent);
+  filter:blur(100px); opacity:.12;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+
+/* ── PROFILE CARD ── */
+.profile-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  animation: profileIn .55s cubic-bezier(.22,.68,0,1.18) both;
+}
+@keyframes profileIn {
+  from { opacity:0; transform:translateY(30px) scale(.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.profile-card {
+  background: rgba(8,12,38,.92);
+  border: 1px solid rgba(99,102,241,.35);
+  border-radius: 24px;
+  padding: 48px 44px 42px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(99,102,241,.1) inset,
+    0 0 60px rgba(99,102,241,.18),
+    0 24px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+/* avatar */
+.profile-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 22px;
+}
+.profile-image {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(99,102,241,.5);
+  box-shadow:
+    0 0 0 6px rgba(99,102,241,.12),
+    0 0 30px rgba(99,102,241,.3);
+  display: block;
+}
+.profile-avatar-ring {
+  position: absolute; inset: -8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg,#6366f1,#38bdf8,#a78bfa) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: spinRing 6s linear infinite;
+}
+@keyframes spinRing { to { transform:rotate(360deg); } }
+
+.profile-membership {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  background: linear-gradient(135deg,#f59e0b,#fbbf24);
+  color: #000;
+  font-size: .55rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(251,191,36,.5);
+}
+
+/* name / email */
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 5px;
+  text-shadow: 0 0 20px rgba(99,102,241,.25);
+}
+.profile-email {
+  font-size: .85rem;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+/* stats */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.stat-box {
+  background: rgba(15,20,55,.7);
+  border: 1px solid rgba(99,102,241,.25);
+  border-radius: 14px;
+  padding: 20px 14px;
+  transition: all var(--transition);
+}
+.stat-box:hover {
+  border-color: rgba(99,102,241,.55);
+  box-shadow: 0 0 20px rgba(99,102,241,.2);
+  transform: translateY(-3px);
+}
+.stat-box h2 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  background: linear-gradient(135deg,var(--accent2),var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+.stat-box p {
+  font-size: .72rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+/* divider */
+.profile-divider {
+  height: 1px;
+  background: linear-gradient(90deg,transparent,rgba(99,102,241,.3),transparent);
+  margin-bottom: 26px;
+}
+
+/* action buttons */
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.profile-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 11px;
+  font-family: var(--font-display);
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.profile-btn-primary {
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  color: white;
+  box-shadow: 0 0 16px rgba(124,58,237,.35);
+}
+.profile-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(124,58,237,.55);
+}
+.profile-btn-secondary {
+  background: rgba(99,102,241,.1);
+  color: var(--accent3);
+  border: 1px solid rgba(99,102,241,.3);
+}
+.profile-btn-secondary:hover {
+  background: rgba(99,102,241,.2);
+  border-color: rgba(99,102,241,.55);
+  transform: translateY(-2px);
+}
+.logout-btn {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid rgba(239,68,68,.3);
+  border-radius: 11px;
+  background: rgba(239,68,68,.1);
+  color: #ef4444;
+  font-family: var(--font-display);
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 20px rgba(239,68,68,.4);
+  transform: translateY(-2px);
+}
+
+/* ── ORDER HISTORY MODAL ── */
+.modal {
+  display: none;
+  position: fixed; inset:0;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-content {
+  background: rgba(8,12,38,.97);
+  border: 1px solid rgba(99,102,241,.35);
+  border-radius: 20px;
+  padding: 34px;
+  width: 90%;
+  max-width: 650px;
+  max-height: 82vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(99,102,241,.22);
+  color: var(--text);
+  animation: modalIn .28s ease;
+}
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.94) translateY(16px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.modal-content::-webkit-scrollbar { width:4px; }
+.modal-content::-webkit-scrollbar-thumb { background:var(--accent); border-radius:2px; }
+.modal-header {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:24px;
+}
+.modal-header h2 {
+  font-family:var(--font-display);
+  font-size:1.25rem; font-weight:800; color:#fff;
+}
+.modal-close-btn {
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.modal-close-btn:hover { background:#ef4444; color:white; }
+
+/* order cards */
+.order-history-card {
+  background: rgba(15,20,55,.7);
+  border: 1px solid rgba(99,102,241,.22);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  text-align: left;
+  transition: border-color var(--transition);
+}
+.order-history-card:hover { border-color:rgba(99,102,241,.5); }
+.order-history-header {
+  display:flex; justify-content:space-between;
+  margin-bottom:10px; font-size:.82rem;
+}
+.order-id { font-weight:700; color:var(--accent3); }
+.order-date { color:var(--muted); }
+.order-items-list { padding-left:18px; margin:8px 0; color:#cbd5e1; font-size:.85rem; }
+.order-history-total {
+  text-align:right; margin-top:10px;
+  font-size:.92rem; color:#f0f4ff; font-weight:700;
+}
+
+/* ── SCROLL TO TOP ── */
+#topBtn {
+  position:fixed; bottom:80px; left:20px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white; border:none; border-radius:50%;
+  width:44px; height:44px; font-size:20px;
+  cursor:pointer; display:none; z-index:999;
+  box-shadow:0 0 14px rgba(124,58,237,.5);
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align:center; padding:26px;
+  background:rgba(5,8,22,.85);
+  border-top:1px solid rgba(99,102,241,.15);
+  color:var(--muted); font-size:.8rem;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  .navbar { flex-wrap:wrap; gap:12px; }
+  .nav-links { flex-wrap:wrap; justify-content:center; gap:14px; }
+  .nav-auth { justify-content:center; }
+  .profile-card { padding:34px 22px 30px; }
+  .profile-stats { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<header>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="images/techhublogo.jpg" alt="TechyHub Logo"
+        style="height:36px;width:36px;object-fit:contain;border-radius:7px;">
+      TechyHub
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="wishlist.html">Wishlist ❤️</a></li>
+      <li><a href="cart.html">Cart 🛒
+        <span id="cartCount" style="background:#ef4444;color:white;border-radius:50%;padding:2px 7px;font-size:12px;">0</span>
+      </a></li>
+    </ul>
+    <div class="nav-auth">
+      <a href="profile.html" class="nav-profile-btn">👤 Profile</a>
+      <a href="login.html" class="nav-login-btn">Login</a>
+    </div>
+    <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+  </nav>
+</header>
+
+<!-- ── PROFILE PAGE ── -->
+<div class="profile-bg">
+  <!-- Glow blobs -->
+  <div class="profile-blob1"></div>
+  <div class="profile-blob2"></div>
+  <div class="profile-blob3"></div>
+
+  <div class="profile-wrapper">
+    <div class="profile-card">
+
+      <!-- Avatar -->
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar-ring"></div>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          alt="Profile Picture"
+          class="profile-image"
+        >
+        <span class="profile-membership">⭐ Gold</span>
+      </div>
+
+      <!-- Name / Email -->
+      <h2 class="profile-name" id="profileName">Guest User</h2>
+      <p class="profile-email" id="profileEmail">Not logged in</p>
+
+      <!-- Stats -->
+      <div class="profile-stats">
+        <div class="stat-box">
+          <h2 id="orderCount">0</h2>
+          <p>Orders</p>
+        </div>
+        <div class="stat-box">
+          <h2 id="wishlistCount">0</h2>
+          <p>Wishlist</p>
+        </div>
+        <div class="stat-box">
+          <h2>Gold</h2>
+          <p>Membership</p>
+        </div>
+      </div>
+
+      <div class="profile-divider"></div>
+
+      <!-- Actions -->
+      <div class="profile-actions">
+        <button class="profile-btn profile-btn-primary">✏️ Edit Profile</button>
+        <button class="profile-btn profile-btn-secondary" onclick="showOrderHistory()">🧾 Order History</button>
+        <button class="logout-btn" onclick="logoutUser()">🚪 Logout</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── ORDER HISTORY MODAL ── -->
+<div class="modal" id="orderHistoryModal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🧾 Order History</h2>
+      <button class="modal-close-btn" onclick="closeOrderHistory()">✕ Close</button>
+    </div>
+    <div id="orderHistoryBody"></div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>© 2026 TechyHub. All Rights Reserved.</p>
+</footer>
+
+<button id="topBtn" onclick="scrollToTop()">↑</button>
+
+</body>
+</html>
