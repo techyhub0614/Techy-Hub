@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TechyHub — About</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================
+   RESET & BASE
+============================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg-deep:    #050816;
+  --bg-card:    rgba(10,15,40,0.82);
+  --border-glow:rgba(99,102,241,0.28);
+  --accent:     #6366f1;
+  --accent2:    #38bdf8;
+  --accent3:    #a78bfa;
+  --text:       #e2e8f0;
+  --muted:      #64748b;
+  --white:      #ffffff;
+  --danger:     #ef4444;
+  --success:    #22c55e;
+  --font-display:"Space Grotesk", sans-serif;
+  --font-body:  "Inter", sans-serif;
+  --radius:     14px;
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================
+   HERO BANNER
+============================ */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px 60px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0e2e 0%, #150a3a 50%, #0a0e2e 100%);
+}
+
+.hero-banner::before {
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(circle at 30% 30%, rgba(99,102,241,.25), transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(56,189,248,.18), transparent 60%);
+}
+
+.hero-banner > * { position:relative; z-index:1; }
+
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(99,102,241,.5);
+  margin-bottom: 16px;
+}
+
+.hero-title span {
+  background: linear-gradient(90deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: #94a3b8;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ============================
+   TOPBAR
+============================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 5%;
+  background: rgba(5,8,22,.9);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(99,102,241,.18);
+}
+
+.topbar .logo {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent3);
+  text-decoration: none;
+  letter-spacing: -.5px;
+  text-shadow: 0 0 12px rgba(167,139,250,.4);
+}
+
+.topbar-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.topbar-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.topbar-links a:hover,
+.topbar-links a.active { color: var(--accent3); }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.icon-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #cbd5e1;
+  font-size: 1.3rem;
+  text-decoration: none;
+  transition: color var(--transition);
+  display:flex; align-items:center; justify-content:center;
+}
+
+.icon-btn:hover { color: var(--accent3); }
+
+.cart-badge {
+  position: absolute;
+  top: -6px; right: -10px;
+  background: var(--accent);
+  color: white;
+  font-size: .6rem;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+}
+
+.topbar-text-btn {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid var(--border-glow);
+  border-radius: 50px;
+  transition: all var(--transition);
+}
+
+.topbar-text-btn:hover {
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(99,102,241,.35);
+}
+
+.topbar-login-btn {
+  color: white;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 700;
+  padding: 9px 20px;
+  border-radius: 50px;
+  background: linear-gradient(135deg,var(--accent),#7c3aed);
+  box-shadow: 0 0 14px rgba(99,102,241,.4);
+  transition: all var(--transition);
+}
+
+.topbar-login-btn:hover {
+  opacity:.9;
+  box-shadow: 0 0 22px rgba(99,102,241,.6);
+}
+
+.dark-toggle {
+  background: rgba(15,20,50,.8);
+  border: 1px solid var(--border-glow);
+  color: var(--text);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display:flex; align-items:center; justify-content:center;
+  transition: all var(--transition);
+}
+
+.dark-toggle:hover { border-color: var(--accent); box-shadow:0 0 12px rgba(99,102,241,.4); }
+
+/* ============================
+   ABOUT SECTION
+============================ */
+.about-section {
+  padding: 60px 5% 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-section h1 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  text-align:center;
+  margin-bottom: 18px;
+}
+
+.about-section > p {
+  font-size: 1rem;
+  color: #94a3b8;
+  line-height: 1.8;
+  max-width: 720px;
+  margin: 0 auto 50px;
+  text-align: center;
+}
+
+.about-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 24px;
+  text-align: center;
+  position: relative;
+}
+
+.about-section h2::after {
+  content:"";
+  display:block;
+  width: 60px;
+  height: 3px;
+  margin: 12px auto 0;
+  background: linear-gradient(90deg, var(--accent2), var(--accent3));
+  border-radius: 2px;
+}
+
+/* ============================
+   MISSION GRID (TECHYHUB letters)
+============================ */
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 18px;
+  margin-bottom: 60px;
+}
+
+.mission-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.mission-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 30px rgba(99,102,241,.3);
+  border-color: rgba(99,102,241,.6);
+}
+
+.mission-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.mission-card p {
+  font-size: .82rem;
+  color: #94a3b8;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ============================
+   MISSION / VISION BLOCKS
+============================ */
+.info-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  padding: 32px 36px;
+  margin-bottom: 50px;
+  backdrop-filter: blur(12px);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.info-block:hover {
+  border-color: rgba(99,102,241,.5);
+  box-shadow: 0 0 30px rgba(99,102,241,.15);
+}
+
+.info-block p {
+  font-size: .95rem;
+  color: #94a3b8;
+  line-height: 1.85;
+}
+
+/* ============================
+   TEAM SECTION
+============================ */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 10px;
+}
+
+.team-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.team-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 0 40px rgba(99,102,241,.35);
+  border-color: rgba(99,102,241,.6);
+}
+
+.team-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  background: linear-gradient(135deg,#0f1432,#1a1040);
+}
+
+.team-card h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  margin: 18px 16px 6px;
+  line-height: 1.35;
+}
+
+.team-card p {
+  font-size: .78rem;
+  color: var(--accent2);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+
+/* ============================
+   BACK TO TOP BUTTON
+============================ */
+#topBtn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  background: linear-gradient(135deg,var(--accent),#7c3aed);
+  color: white;
+  border: none;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(99,102,241,.45);
+  transition: all var(--transition);
+  display: none;
+  align-items:center; justify-content:center;
+  z-index: 100;
+}
+
+#topBtn.show { display:flex; }
+
+#topBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 28px rgba(99,102,241,.65);
+}
+
+/* ============================
+   FOOTER
+============================ */
+.footer {
+  text-align: center;
+  padding: 28px;
+  border-top: 1px solid var(--border-glow);
+  background: rgba(5,8,22,.8);
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+/* ============================
+   SCROLLBAR
+============================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050816; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media(max-width:768px) {
+  .topbar-links { display:none; }
+  .about-section h1 { font-size: 1.7rem; }
+  .info-block { padding: 24px 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======= TOPBAR ======= -->
+<nav class="topbar">
+  <a href="index.html" class="logo">TechyHub</a>
+  <ul class="topbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="tracking.html">Tracking</a></li>
+  </ul>
+  <div class="topbar-actions">
+    <a href="wishlist.html" class="icon-btn" title="Wishlist">❤️</a>
+    <a href="cart.html" class="icon-btn" title="Cart">
+      🛒 <span class="cart-badge" id="cartCount">0</span>
+    </a>
+    <a href="profile.html" class="topbar-text-btn">Profile</a>
+    <a href="login.html" class="topbar-login-btn">Login</a>
+    <button id="darkModeBtn" onclick="toggleDarkMode()" class="dark-toggle" title="Toggle Dark Mode">🌙</button>
+  </div>
+</nav>
+
+<!-- ======= HERO BANNER ======= -->
+<section class="hero-banner">
+  <p class="hero-eyebrow">Our Story</p>
+  <h1 class="hero-title">About <span>TechyHub</span></h1>
+  <p class="hero-subtitle">A modern technology e-commerce platform built to bring you authentic, affordable, and high-quality tech — backed by a team that genuinely cares.</p>
+</section>
+
+<!-- ======= ABOUT CONTENT ======= -->
+<section class="about-section">
+
+  <h2>What Does TechyHub Mean?</h2>
+  <div class="mission-grid">
+    <div class="mission-card">
+      <h3>T</h3>
+      <p>Trustworthy Products</p>
+    </div>
+    <div class="mission-card">
+      <h3>E</h3>
+      <p>Efficient Platform</p>
+    </div>
+    <div class="mission-card">
+      <h3>C</h3>
+      <p>Customer-First Support</p>
+    </div>
+    <div class="mission-card">
+      <h3>H</h3>
+      <p>High-Quality Deals</p>
+    </div>
+    <div class="mission-card">
+      <h3>Y</h3>
+      <p>Your Go-To Hub</p>
+    </div>
+    <div class="mission-card">
+      <h3>H</h3>
+      <p>Hub of Innovation</p>
+    </div>
+    <div class="mission-card">
+      <h3>U</h3>
+      <p>Unbeatable Convenience</p>
+    </div>
+    <div class="mission-card">
+      <h3>B</h3>
+      <p>Best Tech Selection</p>
+    </div>
+  </div>
+
+  <h2>Our Mission</h2>
+  <div class="info-block">
+    <p>
+      TechyHub is committed to providing customers with reliable, authentic, and affordable technology products through a seamless and user-friendly online platform.
+      We uphold the highest standards of customer trust and loyalty by ensuring every transaction is transparent, secure, and satisfying.
+      Through continuous innovation, we enhance our platform to better serve the evolving needs of our customers.
+      We are dedicated to fostering a strong and engaged community of technology users, while integrating sustainable and environmentally responsible practices across our operations and product selections.
+    </p>
+  </div>
+
+  <h2>Our Vision</h2>
+  <div class="info-block">
+    <p>
+      TechyHub aspires to be a globally recognized leader in the technology marketplace industry, distinguished by its unwavering commitment to excellence, integrity, and customer satisfaction. We envision a future where TechyHub sets the benchmark for best-in-class e-commerce experiences, empowering individuals and communities worldwide with access to quality technology.
+      As we expand our reach across borders, we remain steadfast in our pursuit of creating meaningful social impact — bridging the gap between people and technology, and contributing to a more connected, informed, and empowered society.
+    </p>
+  </div>
+
+  <!-- TEAM SECTION -->
+  <h2 style="margin-top:70px;">Meet Our Team</h2>
+  <div class="team-grid">
+    <div class="team-card">
+      <img src="images/broncano.jpg.jpg" alt="Lance Bamboo Francisco Z. Broncano">
+      <h3>Lance Bamboo Francisco Z. Broncano</h3>
+      <p>Full Stack Developer</p>
+    </div>
+    <div class="team-card">
+      <img src="images/datario.jpg.jpg" alt="Giovani Rey M. Datario">
+      <h3>Giovani Rey M. Datario</h3>
+      <p>Project Manager / Team Lead</p>
+    </div>
+    <div class="team-card">
+      <img src="images/vibar.jpg" alt="David Vibar Jr.">
+      <h3>David Vibar Jr.</h3>
+      <p>Back-End Developer / System Architect</p>
+    </div>
+    <div class="team-card">
+      <img src="images/arcilla.jpg" alt="Jouldian Arcilla">
+      <h3>Jouldian Arcilla</h3>
+      <p>Content Writer / Copywriter</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer">
+  © 2026 TechyHub. All Rights Reserved.
+</footer>
+
+<button id="topBtn" onclick="scrollToTop()" title="Back to top">↑</button>
+
+<script>
+  // Dark mode toggle (kept for compatibility with existing script.js behavior)
+  function toggleDarkMode() {
+    document.body.classList.toggle("light-mode");
+  }
+
+  // Back to top button visibility
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("topBtn");
+    if (window.scrollY > 300) {
+      btn.classList.add("show");
+    } else {
+      btn.classList.remove("show");
+    }
+  });
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Cart count sync (reads same localStorage key as products.html)
+  document.addEventListener("DOMContentLoaded", () => {
+    const cart = JSON.parse(localStorage.getItem("TechyHubCart")) || [];
+    const el = document.getElementById("cartCount");
+    if (el) el.textContent = cart.length;
+  });
+</script>
+
+</body>
+</html>
