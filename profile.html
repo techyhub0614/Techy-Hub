@@ -166,7 +166,7 @@ body {
   -webkit-backdrop-filter: blur(22px);
 }
 
-/* avatar */
+/* avatar styling + camera badge */
 .profile-avatar-wrap {
   position: relative;
   display: inline-block;
@@ -181,6 +181,7 @@ body {
     0 0 0 6px rgba(99,102,241,.12),
     0 0 30px rgba(99,102,241,.3);
   display: block;
+  transition: filter var(--transition);
 }
 .profile-avatar-ring {
   position: absolute; inset: -8px;
@@ -196,7 +197,7 @@ body {
 
 .profile-membership {
   position: absolute;
-  bottom: 4px; right: 4px;
+  bottom: 4px; left: -10px;
   background: linear-gradient(135deg,#f59e0b,#fbbf24);
   color: #000;
   font-size: .55rem;
@@ -208,19 +209,43 @@ body {
   box-shadow: 0 0 10px rgba(251,191,36,.5);
 }
 
-/* name / email */
-.profile-name {
-  font-family: var(--font-display);
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 5px;
-  text-shadow: 0 0 20px rgba(99,102,241,.25);
+/* Hidden Camera Badge overlay when editing */
+.camera-badge {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 22, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
 }
-.profile-email {
-  font-size: .85rem;
-  color: var(--muted);
-  margin-bottom: 30px;
+.edit-active .camera-badge {
+  opacity: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Input Fields Mode Styling */
+.profile-input {
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  width: 100%;
+  transition: all var(--transition);
+}
+.profile-input:focus {
+  outline: none;
+}
+.profile-input:not(:disabled) {
+  background: rgba(99, 102, 241, 0.1) !important;
+  border-bottom: 2px dashed var(--accent2) !important;
+  padding: 4px 10px;
+  border-radius: 8px;
 }
 
 /* stats */
@@ -428,7 +453,6 @@ footer {
 </head>
 <body>
 
-<!-- ── NAVBAR ── -->
 <header>
   <nav class="navbar">
     <div class="logo">
@@ -454,9 +478,7 @@ footer {
   </nav>
 </header>
 
-<!-- ── PROFILE PAGE ── -->
 <div class="profile-bg">
-  <!-- Glow blobs -->
   <div class="profile-blob1"></div>
   <div class="profile-blob2"></div>
   <div class="profile-blob3"></div>
@@ -464,22 +486,26 @@ footer {
   <div class="profile-wrapper">
     <div class="profile-card">
 
-      <!-- Avatar -->
-      <div class="profile-avatar-wrap">
+      <div class="profile-avatar-wrap" id="avatarContainer">
         <div class="profile-avatar-ring"></div>
         <img
           src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
           alt="Profile Picture"
           class="profile-image"
+          id="profileImageDisplay"
         >
+        <div class="camera-badge" onclick="triggerPhotoUpload()">📸</div>
         <span class="profile-membership">⭐ Gold</span>
+        <input type="file" id="photoUploader" accept="image/*" style="display:none;" onchange="loadPreviewPhoto(event)">
       </div>
 
-      <!-- Name / Email -->
-      <h2 class="profile-name" id="profileName">Guest User</h2>
-      <p class="profile-email" id="profileEmail">Not logged in</p>
+      <div style="margin-bottom: 30px;">
+        <input type="text" id="profileNameField" class="profile-input" value="Guest User" disabled
+          style="font-family: var(--font-display); font-size: 1.65rem; font-weight: 800;">
+        <input type="email" id="profileEmailField" class="profile-input" value="Not logged in" disabled
+          style="font-size: .85rem; color: var(--muted); margin-top: 5px;">
+      </div>
 
-      <!-- Stats -->
       <div class="profile-stats">
         <div class="stat-box">
           <h2 id="orderCount">0</h2>
@@ -497,9 +523,8 @@ footer {
 
       <div class="profile-divider"></div>
 
-      <!-- Actions -->
       <div class="profile-actions">
-        <button class="profile-btn profile-btn-primary">✏️ Edit Profile</button>
+        <button class="profile-btn profile-btn-primary" id="editTriggerBtn" onclick="toggleProfileEditState()">✏️ Edit Profile</button>
         <button class="profile-btn profile-btn-secondary" onclick="showOrderHistory()">🧾 Order History</button>
         <button class="logout-btn" onclick="logoutUser()">🚪 Logout</button>
       </div>
@@ -508,7 +533,6 @@ footer {
   </div>
 </div>
 
-<!-- ── ORDER HISTORY MODAL ── -->
 <div class="modal" id="orderHistoryModal" style="display:none;">
   <div class="modal-content">
     <div class="modal-header">
@@ -519,12 +543,82 @@ footer {
   </div>
 </div>
 
-<!-- ── FOOTER ── -->
 <footer>
   <p>© 2026 TechyHub. All Rights Reserved.</p>
 </footer>
 
 <button id="topBtn" onclick="scrollToTop()">↑</button>
 
+<script>
+/* ==========================================================================
+   FRONTEND ONLY STORAGE & PROFILE CONTROLS
+========================================================================== */
+
+// 1. Awtomatikong i-load ang nilagay na data galing sa browser localStorage pagkabukas
+document.addEventListener("DOMContentLoaded", () => {
+    const savedName = localStorage.getItem("th_name");
+    const savedEmail = localStorage.getItem("th_email");
+    const savedPhoto = localStorage.getItem("th_photo");
+
+    if (savedName) document.getElementById("profileNameField").value = savedName;
+    if (savedEmail) document.getElementById("profileEmailField").value = savedEmail;
+    if (savedPhoto) document.getElementById("profileImageDisplay").src = savedPhoto;
+});
+
+// 2. I-trigger ang pagpili ng local photo file
+function triggerPhotoUpload() {
+    document.getElementById("photoUploader").click();
+}
+
+// 3. I-preview ang piniling larawan at i-convert sa string (Base64)
+function loadPreviewPhoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            document.getElementById("profileImageDisplay").src = e.target.result;
+        };
+        fileReader.readAsDataURL(file);
+    }
+}
+
+// 4. Salitan mula locked/read-only papuntang edit mode
+function toggleProfileEditState() {
+    const nameInput = document.getElementById("profileNameField");
+    const emailInput = document.getElementById("profileEmailField");
+    const actionBtn = document.getElementById("editTriggerBtn");
+    const avatarWrapper = document.getElementById("avatarContainer");
+
+    const isLocked = nameInput.hasAttribute("disabled");
+
+    if (isLocked) {
+        // PASUKIN ANG EDIT MODE
+        nameInput.removeAttribute("disabled");
+        emailInput.removeAttribute("disabled");
+        nameInput.focus();
+        avatarWrapper.classList.add("edit-active"); 
+        actionBtn.innerHTML = "💾 Save Changes";
+        actionBtn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)"; 
+    } else {
+        // PASUKIN ANG SAVE MODE
+        nameInput.setAttribute("disabled", "true");
+        emailInput.setAttribute("disabled", "true");
+        avatarWrapper.classList.remove("edit-active"); 
+        actionBtn.innerHTML = "✏️ Edit Profile";
+        actionBtn.style.background = ""; 
+
+        // I-save ang values gamit ang browser memory (localStorage)
+        localStorage.setItem("th_name", nameInput.value);
+        localStorage.setItem("th_email", emailInput.value);
+        
+        const photoSrc = document.getElementById("profileImageDisplay").src;
+        if (!photoSrc.includes("flaticon.com")) {
+            localStorage.setItem("th_photo", photoSrc);
+        }
+
+        alert("Profile updated successfully!");
+    }
+}
+</script>
 </body>
 </html>
