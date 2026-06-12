@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechyHub - Login</title>
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================
+   LOGIN PAGE — matches products.html design system
+================================================ */
+:root {
+  --bg-deep:     #050816;
+  --accent:      #6366f1;
+  --accent2:     #38bdf8;
+  --accent3:     #a78bfa;
+  --text:        #e2e8f0;
+  --muted:       #64748b;
+  --border-glow: rgba(99,102,241,0.28);
+  --font-display:"Space Grotesk", sans-serif;
+  --font-body:   "Inter", sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-thumb { background:var(--accent); border-radius:3px; }
+
+/* ── NAVBAR (same as products.html) ── */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 5%;
+  background: rgba(5,8,22,.9);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(99,102,241,.18);
+  position: sticky; top:0; z-index:200;
+  box-shadow: 0 0 20px rgba(99,102,241,.1);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--accent3);
+  text-decoration: none;
+  letter-spacing: -.5px;
+  text-shadow: 0 0 12px rgba(167,139,250,.4);
+  display: flex; align-items:center; gap:8px;
+}
+.login-nav-home {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(99,102,241,.2);
+  transition: all .2s;
+}
+.login-nav-home:hover { background:rgba(99,102,241,.18); color:var(--accent3); }
+
+/* ── FULL-PAGE BACKGROUND (same hero-bg) ── */
+.login-bg {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: url('images/hero-bg.jpg') center/cover no-repeat;
+  overflow: hidden;
+}
+.login-bg::before {
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(135deg,
+    rgba(5,8,22,.88) 0%,
+    rgba(25,8,55,.76) 50%,
+    rgba(5,8,22,.88) 100%);
+}
+/* glow blobs */
+.login-bg::after {
+  content:"";
+  position:absolute;
+  width:500px; height:500px;
+  background: radial-gradient(#7c3aed, transparent);
+  filter: blur(130px);
+  opacity: .28;
+  top:-100px; right:-100px;
+  pointer-events:none;
+}
+.login-glow2 {
+  position:absolute;
+  width:380px; height:380px;
+  background: radial-gradient(#2563eb, transparent);
+  filter: blur(110px);
+  opacity: .2;
+  bottom:-80px; left:-80px;
+  pointer-events:none;
+}
+
+/* ── LOGIN CARD ── */
+.login-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  animation: loginCardIn .5s cubic-bezier(.22,.68,0,1.18) both;
+}
+@keyframes loginCardIn {
+  from { opacity:0; transform:translateY(28px) scale(.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.login-card {
+  background: rgba(8,12,38,.92);
+  border: 1px solid rgba(99,102,241,.35);
+  border-radius: 22px;
+  padding: 46px 42px 40px;
+  box-shadow:
+    0 0 0 1px rgba(99,102,241,.1) inset,
+    0 0 50px rgba(99,102,241,.18),
+    0 20px 50px rgba(0,0,0,.5);
+  backdrop-filter: blur(20px);
+}
+
+/* Brand row */
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.login-brand-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent3);
+  letter-spacing: -.5px;
+  text-shadow: 0 0 10px rgba(167,139,250,.35);
+}
+.login-brand-pulse {
+  width: 8px; height: 8px;
+  background: var(--accent2);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent2);
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.35);opacity:.7} }
+
+.login-card h1 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: -.4px;
+}
+.login-sub {
+  font-size: .85rem;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+/* Fields */
+.login-field { margin-bottom: 18px; }
+.login-field label {
+  display: block;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 7px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+.login-input-wrap { position:relative; }
+.input-icon {
+  position:absolute; left:13px; top:50%;
+  transform:translateY(-50%);
+  font-size:.9rem; opacity:.45; pointer-events:none;
+}
+.login-field input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  background: rgba(15,20,50,.8);
+  border: 1px solid rgba(99,102,241,.3);
+  border-radius: 10px;
+  font-size: .9rem;
+  font-family: var(--font-body);
+  color: #f1f5f9;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.login-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+}
+.login-field input::placeholder { color:#475569; }
+
+/* pw toggle */
+.pw-toggle {
+  position:absolute; right:12px; top:50%;
+  transform:translateY(-50%);
+  background:none; border:none;
+  cursor:pointer; font-size:.9rem; opacity:.45; padding:0;
+  transition:opacity .2s;
+}
+.pw-toggle:hover { opacity:.78; }
+
+/* forgot */
+.login-forgot {
+  display:block; text-align:right;
+  font-size:.75rem; color:var(--accent3);
+  text-decoration:none; margin-top:-10px; margin-bottom:22px;
+  font-weight:500; transition:color .2s;
+}
+.login-forgot:hover { color:var(--accent2); }
+
+/* submit */
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: .92rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: all .22s;
+  box-shadow: 0 0 18px rgba(124,58,237,.4);
+  letter-spacing: .3px;
+}
+.login-btn:hover { transform:translateY(-2px); box-shadow:0 0 28px rgba(124,58,237,.58); }
+.login-btn:active { transform:translateY(0); }
+
+/* divider */
+.login-divider {
+  display:flex; align-items:center; gap:12px;
+  margin:22px 0; color:#334155; font-size:.75rem;
+}
+.login-divider::before,
+.login-divider::after {
+  content:""; flex:1; height:1px;
+  background:rgba(99,102,241,.2);
+}
+
+/* footer */
+.login-footer {
+  text-align:center;
+  font-size:.82rem;
+  color:var(--muted);
+  margin-top:18px;
+}
+.login-footer a {
+  color:var(--accent3);
+  font-weight:600;
+  text-decoration:none;
+}
+.login-footer a:hover { color:var(--accent2); text-decoration:underline; }
+
+.login-back {
+  display:block; text-align:center;
+  margin-top:12px; font-size:.76rem;
+  color:#475569; text-decoration:none;
+  transition:color .2s;
+}
+.login-back:hover { color:var(--accent3); }
+
+/* security badge */
+.login-security {
+  display:flex; align-items:center; justify-content:center;
+  gap:6px; margin-top:20px;
+  font-size:.7rem; color:#334155;
+}
+.login-security-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--success, #22c55e);
+  box-shadow:0 0 6px var(--success, #22c55e);
+}
+
+/* ── FOOTER ── */
+.login-page-footer {
+  text-align:center; padding:22px;
+  background:rgba(5,8,22,.85);
+  border-top:1px solid rgba(99,102,241,.15);
+  color:var(--muted); font-size:.78rem;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px) {
+  .login-card { padding:34px 24px 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="images/techhublogo.jpg" alt="TechyHub Logo"
+      style="height:34px;width:34px;object-fit:contain;border-radius:7px;">
+    TechyHub
+  </a>
+  <a href="index.html" class="login-nav-home">🏠 Back to Home</a>
+</nav>
+
+<!-- ── LOGIN BG + CARD ── -->
+<div class="login-bg">
+  <div class="login-glow2"></div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Brand -->
+      <div class="login-brand">
+        <span class="login-brand-logo">TechyHub</span>
+        <span class="login-brand-pulse"></span>
+      </div>
+
+      <h1>Welcome back</h1>
+      <p class="login-sub">Sign in to your account to continue shopping</p>
+
+      <!-- Email -->
+      <div class="login-field">
+        <label for="loginEmail">Email address</label>
+        <div class="login-input-wrap">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="login-field">
+        <label for="loginPassword">Password</label>
+        <div class="login-input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+          <button class="pw-toggle" type="button" onclick="togglePW()" id="pwBtn" title="Show/hide">👁</button>
+        </div>
+      </div>
+
+      <a href="#" class="login-forgot">Forgot password?</a>
+
+      <button class="login-btn" onclick="loginUser()">Sign in →</button>
+
+      <div class="login-divider">or</div>
+
+      <div class="login-footer">
+        Don't have an account? <a href="register.html">Create one free</a>
+      </div>
+
+      <a href="index.html" class="login-back">← Back to Home</a>
+
+      <div class="login-security">
+        <span class="login-security-dot"></span>
+        Secured with 256-bit encryption
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="login-page-footer">
+  © 2026 TechyHub. All Rights Reserved.
+</footer>
+
+<script>
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark-mode");
+  }
+
+  function togglePW() {
+    const input = document.getElementById("loginPassword");
+    const btn   = document.getElementById("pwBtn");
+    if (input.type === "password") {
+      input.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      input.type = "password";
+      btn.textContent = "👁";
+    }
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter") loginUser();
+  });
+</script>
+</body>
+</html>
