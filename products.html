@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TechyHub — Products</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Supabase JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ============================
+   RESET & BASE
+============================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg-deep:    #050816;
+  --bg-card:    rgba(10,15,40,0.82);
+  --border-glow:rgba(99,102,241,0.28);
+  --accent:     #6366f1;
+  --accent2:    #38bdf8;
+  --accent3:    #a78bfa;
+  --text:       #e2e8f0;
+  --muted:      #64748b;
+  --white:      #ffffff;
+  --danger:     #ef4444;
+  --success:    #22c55e;
+  --font-display:"Space Grotesk", sans-serif;
+  --font-body:  "Inter", sans-serif;
+  --radius:     14px;
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================
+   HERO BANNER
+============================ */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px 60px;
+  overflow: hidden;
+  background: url('hero-bg.jpg') center/cover no-repeat;
+}
+
+.hero-banner::before {
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(135deg,
+    rgba(5,8,22,0.78) 0%,
+    rgba(30,10,60,0.62) 50%,
+    rgba(5,8,22,0.78) 100%);
+}
+
+.hero-banner > * { position:relative; z-index:1; }
+
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(99,102,241,.5);
+  margin-bottom: 16px;
+}
+
+.hero-title span {
+  background: linear-gradient(90deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: #94a3b8;
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+
+/* ============================
+   NAVBAR
+============================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 5%;
+  background: rgba(5,8,22,.9);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(99,102,241,.18);
+}
+
+.topbar .logo {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent3);
+  text-decoration: none;
+  letter-spacing: -.5px;
+  text-shadow: 0 0 12px rgba(167,139,250,.4);
+}
+
+.topbar-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.topbar-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.topbar-links a:hover { color: var(--accent3); }
+
+.cart-icon-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #cbd5e1;
+  font-size: 1.5rem;
+  transition: color var(--transition);
+}
+
+.cart-icon-btn:hover { color: var(--accent3); }
+
+.cart-badge {
+  position: absolute;
+  top: -6px; right: -8px;
+  background: var(--accent);
+  color: white;
+  font-size: .6rem;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+}
+
+/* ============================
+   FILTERS + SEARCH BAR
+============================ */
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  padding: 28px 5%;
+  background: rgba(10,15,40,.6);
+  border-bottom: 1px solid var(--border-glow);
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.search-wrap svg {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  background: rgba(15,20,50,.8);
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: .9rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.search-wrap input:focus { border-color: var(--accent); }
+.search-wrap input::placeholder { color: var(--muted); }
+
+.filter-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-btn {
+  padding: 8px 18px;
+  border: 1px solid var(--border-glow);
+  border-radius: 50px;
+  background: transparent;
+  color: #94a3b8;
+  font-size: .82rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 14px rgba(99,102,241,.45);
+}
+
+.sort-select {
+  padding: 10px 16px;
+  background: rgba(15,20,50,.8);
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.sort-select option { background: #0f1432; }
+
+/* ============================
+   PRODUCT GRID
+============================ */
+.products-section {
+  padding: 40px 5% 80px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+}
+
+.product-count {
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+}
+
+/* ============================
+   PRODUCT CARD
+============================ */
+.product-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  backdrop-filter: blur(12px);
+  animation: fadeUp .5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.product-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 0 40px rgba(99,102,241,.35);
+  border-color: rgba(99,102,241,.6);
+}
+
+.product-card:hover .card-overlay { opacity: 1; }
+.product-card:hover .card-img { transform: scale(1.06); }
+
+.card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: linear-gradient(135deg,#0f1432,#1a1040);
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.card-img-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  background: linear-gradient(135deg,#0f1432,#1a1050);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,8,35,.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.overlay-btn {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  width: 155px;
+  text-align: center;
+}
+
+.overlay-btn-primary {
+  background: linear-gradient(135deg,var(--accent),#7c3aed);
+  color: white;
+  box-shadow: 0 0 14px rgba(99,102,241,.4);
+}
+
+.overlay-btn-secondary {
+  background: rgba(255,255,255,.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,.2);
+}
+
+.overlay-btn:hover { opacity: .85; transform: scale(1.04); }
+
+.badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.badge-new    { background: #22c55e; color: #fff; }
+.badge-hot    { background: #f97316; color: #fff; }
+.badge-sale   { background: #ef4444; color: #fff; }
+.badge-top    { background: var(--accent); color: #fff; }
+
+.wishlist-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: rgba(0,0,0,.5);
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items:center; justify-content:center;
+  transition: all var(--transition);
+  z-index: 2;
+}
+
+.wishlist-btn:hover { background: #ef4444; transform: scale(1.15); }
+.wishlist-btn.in-wishlist { background: #ef4444; }
+
+.card-body {
+  padding: 18px 18px 20px;
+}
+
+.card-category {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--accent2);
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.card-sku {
+  font-size: .68rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  letter-spacing: .5px;
+}
+
+.card-stars {
+  color: #fbbf24;
+  font-size: .85rem;
+  margin-bottom: 10px;
+}
+
+.card-stars span {
+  color: var(--muted);
+  font-size: .75rem;
+  margin-left: 4px;
+}
+
+.card-price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.card-price {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent2);
+}
+
+.card-price-old {
+  font-size: .82rem;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.card-add-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg,var(--accent),#7c3aed);
+  border: none;
+  border-radius: 9px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 0 14px rgba(99,102,241,.3);
+}
+
+.card-add-btn:hover {
+  opacity: .9;
+  box-shadow: 0 0 22px rgba(99,102,241,.55);
+  transform: translateY(-1px);
+}
+
+/* ============================
+   PRODUCT DETAIL MODAL
+============================ */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-backdrop.open { display: flex; }
+
+.modal-box {
+  background: rgba(8,12,38,.96);
+  border: 1px solid rgba(99,102,241,.35);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 60px rgba(99,102,241,.25);
+  animation: modalIn .28s ease;
+}
+
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.94) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+.modal-box::-webkit-scrollbar { width:5px; }
+.modal-box::-webkit-scrollbar-track { background:transparent; }
+.modal-box::-webkit-scrollbar-thumb { background:var(--accent); border-radius:3px; }
+
+.modal-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+@media(max-width:600px) { .modal-inner { grid-template-columns:1fr; } }
+
+.modal-img-side {
+  position: relative;
+  background: linear-gradient(135deg,#0a0e2e,#150a3a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  border-radius: 20px 0 0 20px;
+  overflow: hidden;
+}
+
+.modal-img-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .9;
+}
+
+.modal-img-fallback {
+  font-size: 6rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: white;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items:center; justify-content:center;
+  transition: background var(--transition);
+  z-index: 5;
+}
+
+.modal-close:hover { background: var(--danger); }
+
+.modal-info {
+  padding: 36px 32px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.modal-badge-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-category-tag {
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent2);
+  background: rgba(56,189,248,.1);
+  padding: 3px 10px;
+  border-radius: 50px;
+  border: 1px solid rgba(56,189,248,.2);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.modal-sku {
+  font-size: .72rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+  letter-spacing: .5px;
+}
+
+.modal-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.modal-stars { color: #fbbf24; font-size: 1rem; }
+
+.modal-reviews {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.modal-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-price {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent2);
+  text-shadow: 0 0 20px rgba(56,189,248,.35);
+}
+
+.modal-price-old {
+  font-size: 1rem;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.modal-description {
+  font-size: .88rem;
+  color: #94a3b8;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+.specs-title {
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent3);
+  margin-bottom: 12px;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  margin-bottom: 24px;
+}
+
+.spec-row {
+  display: flex;
+  flex-direction: column;
+  background: rgba(15,20,50,.6);
+  border: 1px solid var(--border-glow);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.spec-key {
+  font-size: .65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.spec-val {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.modal-add-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 13px 20px;
+  background: linear-gradient(135deg,var(--accent),#7c3aed);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-family: var(--font-display);
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 0 18px rgba(99,102,241,.35);
+}
+
+.modal-add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(99,102,241,.55);
+}
+
+.modal-wish-btn {
+  padding: 13px 16px;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  border-radius: 10px;
+  color: #ef4444;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.modal-wish-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* ============================
+   SUPABASE STATUS BADGE
+============================ */
+.db-status {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8,12,38,.92);
+  border: 1px solid var(--border-glow);
+  border-radius: 50px;
+  padding: 8px 16px;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.db-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background .4s;
+}
+
+.db-dot.connected { background: var(--success); box-shadow:0 0 8px var(--success); }
+.db-dot.error     { background: var(--danger);  box-shadow:0 0 8px var(--danger); }
+
+/* ============================
+   TOAST
+============================ */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: rgba(10,15,40,.96);
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: .85rem;
+  color: var(--text);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+  animation: toastIn .3s ease, toastOut .3s ease 2.7s forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+}
+
+@keyframes toastIn  { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateX(30px)} }
+
+/* ============================
+   EMPTY STATE
+============================ */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 16px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty-state.visible { display: flex; }
+.empty-state-icon { font-size: 3.5rem; opacity: .6; }
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+/* ============================
+   FOOTER
+============================ */
+.footer {
+  text-align: center;
+  padding: 28px;
+  border-top: 1px solid var(--border-glow);
+  background: rgba(5,8,22,.8);
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+/* ============================
+   SCROLLBAR
+============================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050816; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media(max-width:768px) {
+  .topbar-links { display:none; }
+  .controls-bar { flex-direction:column; }
+  .modal-img-side { min-height:220px; border-radius:20px 20px 0 0; }
+  .specs-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======= TOPBAR ======= -->
+<nav class="topbar">
+  <a href="index.html" class="logo">TechyHub</a>
+  <ul class="topbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html" style="color:var(--accent3)">Products</a></li>
+    <li><a href="cart.html">Cart</a></li>
+    <li><a href="tracking.html">Tracking</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="cart-icon-btn" onclick="window.location.href='cart.html'" title="Cart">
+    🛒 <span class="cart-badge" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- ======= HERO BANNER ======= -->
+<section class="hero-banner">
+  <p class="hero-eyebrow">2025 Latest Collection</p>
+  <h1 class="hero-title">Next-Gen <span>Tech Gear</span><br>Built for Creators</h1>
+  <p class="hero-subtitle">Laptops, GPUs, peripherals, and components — hand-picked with full specs and real pricing.</p>
+</section>
+
+<!-- ======= CONTROLS ======= -->
+<div class="controls-bar">
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="searchInput" type="text" placeholder="Search products, specs, brands…" oninput="filterProducts()" />
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-cat="all"      onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn"        data-cat="laptop"   onclick="setFilter('laptop',this)">Laptops</button>
+    <button class="filter-btn"        data-cat="gpu"      onclick="setFilter('gpu',this)">GPUs</button>
+    <button class="filter-btn"        data-cat="cpu"      onclick="setFilter('cpu',this)">CPUs</button>
+    <button class="filter-btn"        data-cat="ram"      onclick="setFilter('ram',this)">RAM</button>
+    <button class="filter-btn"        data-cat="storage"  onclick="setFilter('storage',this)">Storage</button>
+    <button class="filter-btn"        data-cat="monitor"  onclick="setFilter('monitor',this)">Monitors</button>
+    <button class="filter-btn"        data-cat="keyboard" onclick="setFilter('keyboard',this)">Keyboards</button>
+    <button class="filter-btn"        data-cat="mouse"    onclick="setFilter('mouse',this)">Mice</button>
+    <button class="filter-btn"        data-cat="headset"  onclick="setFilter('headset',this)">Headsets</button>
+    <button class="filter-btn"        data-cat="cooling"  onclick="setFilter('cooling',this)">Cooling</button>
+  </div>
+  <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+    <option value="default">Sort: Default</option>
+    <option value="price-asc">Price: Low → High</option>
+    <option value="price-desc">Price: High → Low</option>
+    <option value="rating">Top Rated</option>
+    <option value="name">A–Z</option>
+  </select>
+</div>
+
+<!-- ======= PRODUCTS SECTION ======= -->
+<section class="products-section">
+  <div class="section-header">
+    <h2 class="section-title" id="sectionTitle">All Products</h2>
+    <span class="product-count" id="productCount">Loading…</span>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon">🔍</div>
+    <h3>No products found</h3>
+    <p>Try a different search term or category.</p>
+  </div>
+</section>
+
+<!-- ======= PRODUCT MODAL ======= -->
+<div class="modal-backdrop" id="productModal" onclick="handleBackdropClick(event)">
+  <div class="modal-box">
+    <div class="modal-inner">
+      <div class="modal-img-side" id="modalImgSide">
+        <button class="modal-close" onclick="closeProductModal()">✕</button>
+        <span class="modal-img-fallback" id="modalImgFallback"></span>
+      </div>
+      <div class="modal-info">
+        <div class="modal-badge-row">
+          <span class="modal-category-tag" id="modalCategory"></span>
+          <span id="modalBadge"></span>
+        </div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-sku" id="modalSKU"></p>
+        <div class="modal-rating">
+          <span class="modal-stars" id="modalStars"></span>
+          <span class="modal-reviews" id="modalReviews"></span>
+        </div>
+        <div class="modal-price-row">
+          <span class="modal-price" id="modalPrice"></span>
+          <span class="modal-price-old" id="modalPriceOld"></span>
+        </div>
+        <p class="modal-description" id="modalDescription"></p>
+        <p class="specs-title">Full Specifications</p>
+        <div class="specs-grid" id="modalSpecs"></div>
+        <div class="modal-actions">
+          <button class="modal-add-btn" id="modalAddBtn" onclick="addFromModal()">🛒 Add to Cart</button>
+          <button class="modal-wish-btn" onclick="wishFromModal()">♥</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SUPABASE STATUS ======= -->
+<div class="db-status">
+  <div class="db-dot" id="dbDot"></div>
+  <span id="dbLabel">Connecting to DB…</span>
+</div>
+
+<!-- ======= TOAST CONTAINER ======= -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer">
+  © 2025 TechyHub Tech Store — All rights reserved.
+  Built with 💙 + Supabase
+</footer>
+
+<!-- ==============================
+     JAVASCRIPT
+============================== -->
+<script>
+/* ============================================================
+   SUPABASE SETUP
+============================================================ */
+const SUPABASE_URL  = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON = "YOUR_ANON_KEY";
+
+let supabaseClient = null;
+let useSupabase    = false;
+
+async function initSupabase() {
+  try {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const { error } = await supabaseClient.from("products").select("id").limit(1);
+    if (error) throw error;
+    useSupabase = true;
+    setDbStatus("connected", "Supabase connected");
+    toast("✅ Live database connected", "success");
+  } catch (e) {
+    setDbStatus("error", "Using local data");
+    toast("💾 Supabase not configured — showing local catalog", "info");
+  }
+}
+
+function setDbStatus(state, label) {
+  const dot = document.getElementById("dbDot");
+  const lbl = document.getElementById("dbLabel");
+  dot.className = "db-dot " + state;
+  lbl.textContent = label;
+}
+
+/* ============================================================
+   LOCAL PRODUCT DATABASE
+============================================================ */
+const LOCAL_PRODUCTS = [
+
+  /* ───── LAPTOPS ───── */
+  {
+    id:1, sku:"TH-LPT-001", name:"ASUS ROG Zephyrus G16 (2025)",
+    img:"https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&q=80",
+    category:"laptop", brand:"ASUS", price:139995, price_old:154995,
+    rating:4.8, reviews:312, badge:"hot", emoji:"💻",
+    description:"The ROG Zephyrus G16 2025 packs AMD's latest Ryzen AI 9 HX 370 with NVIDIA RTX 4080 into an ultra-slim 16-inch chassis with a stunning 2560×1600 240 Hz OLED panel. MUX Switch, 2× Thunderbolt 4, and a 90 Wh battery make this the ultimate creator-gamer laptop.",
+    specs:{ CPU:"AMD Ryzen AI 9 HX 370 (12C/24T)", GPU:"NVIDIA GeForce RTX 4080 Laptop 12 GB", Display:"16\" OLED 2560×1600 240 Hz", RAM:"32 GB LPDDR5X-7500", Storage:"2 TB PCIe 4.0 NVMe SSD", Battery:"90 Wh / ~10 hr", Weight:"1.85 kg", OS:"Windows 11 Home" }
+  },
+  {
+    id:2, sku:"TH-LPT-002", name:"MacBook Pro 16\" M4 Max",
+    img:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80",
+    category:"laptop", brand:"Apple", price:199990, price_old:null,
+    rating:4.9, reviews:589, badge:"top", emoji:"🍎",
+    description:"Apple's M4 Max chip delivers desktop-class performance in a 16-inch aluminum body. Up to 128 GB unified memory, ProRes engine, and a Liquid Retina XDR display make this the definitive professional laptop of 2025.",
+    specs:{ Chip:"Apple M4 Max (16-core CPU)", GPU:"40-core GPU", Display:"16.2\" Liquid Retina XDR 3456×2234", RAM:"48 GB Unified Memory", Storage:"1 TB SSD", Battery:"100 Wh / ~22 hr", Weight:"2.14 kg", OS:"macOS Sequoia 15" }
+  },
+  {
+    id:3, sku:"TH-LPT-003", name:"Lenovo ThinkPad X1 Carbon Gen 13",
+    img:"https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80",
+    category:"laptop", brand:"Lenovo", price:99995, price_old:109995,
+    rating:4.7, reviews:204, badge:"new", emoji:"💼",
+    description:"Gen 13 brings Intel Core Ultra 7 165H vPro with Wi-Fi 7 and a 2.8 K OLED display to the iconic business ultrabook. 1.12 kg, MIL-SPEC tested, and up to 15 hr battery life.",
+    specs:{ CPU:"Intel Core Ultra 7 165H vPro", GPU:"Intel Arc Graphics", Display:"14\" OLED 2880×1800 120 Hz", RAM:"32 GB LPDDR5X", Storage:"1 TB PCIe 4.0 SSD", Battery:"57 Wh / ~15 hr", Weight:"1.12 kg", OS:"Windows 11 Pro" }
+  },
+  {
+    id:4, sku:"TH-LPT-004", name:"MSI Titan GT77 HX",
+    img:"https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80",
+    category:"laptop", brand:"MSI", price:189990, price_old:199990,
+    rating:4.6, reviews:97, badge:"sale", emoji:"🎮",
+    description:"The Titan GT77 HX is a true desktop replacement — Intel Core i9-14900HX, RTX 4090 Laptop 16 GB, and a 17.3\" 4K 144 Hz IPS display. Cherry MX mechanical keyboard built-in.",
+    specs:{ CPU:"Intel Core i9-14900HX (24C/32T)", GPU:"NVIDIA GeForce RTX 4090 Laptop 16 GB", Display:"17.3\" UHD 3840×2160 144 Hz IPS", RAM:"64 GB DDR5-4800", Storage:"2 × 2 TB PCIe 5.0 NVMe RAID 0", Battery:"99.9 Wh", Weight:"3.3 kg", OS:"Windows 11 Home" }
+  },
+  {
+    id:5, sku:"TH-LPT-005", name:"Dell XPS 15 9530 (2025)",
+    img:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80",
+    category:"laptop", brand:"Dell", price:109995, price_old:null,
+    rating:4.7, reviews:448, badge:"new", emoji:"🖥️",
+    description:"Refreshed XPS 15 with Intel Core Ultra 9 185H, NVIDIA RTX 4060 Laptop, and Dell's gorgeous 3.5 K OLED touch display in an all-aluminum chassis.",
+    specs:{ CPU:"Intel Core Ultra 9 185H", GPU:"NVIDIA GeForce RTX 4060 Laptop 8 GB", Display:"15.6\" OLED 3456×2160 Touch", RAM:"32 GB DDR5-5200", Storage:"1 TB PCIe 4.0 SSD", Battery:"86 Wh / ~13 hr", Weight:"1.86 kg", OS:"Windows 11 Home" }
+  },
+
+  /* ───── GPUs ───── */
+  {
+    id:6, sku:"TH-GPU-001", name:"NVIDIA GeForce RTX 5090 FE",
+    img:"https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600&q=80",
+    category:"gpu", brand:"NVIDIA", price:139995, price_old:null,
+    rating:5.0, reviews:512, badge:"hot", emoji:"🔥",
+    description:"The RTX 5090 Founders Edition features 21,760 CUDA cores on Blackwell architecture, 32 GB GDDR7, and DLSS 4 with Multi Frame Generation. The most powerful consumer GPU ever made.",
+    specs:{ Architecture:"NVIDIA Blackwell", CUDA_Cores:"21,760", VRAM:"32 GB GDDR7", Memory_Bus:"512-bit", TDP:"575 W", Outputs:"3× DisplayPort 2.1, 1× HDMI 2.1a", PSU_Req:"1000 W+", PCIe:"PCIe 5.0 ×16" }
+  },
+  {
+    id:7, sku:"TH-GPU-002", name:"AMD Radeon RX 9070 XT",
+    img:"https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=600&q=80",
+    category:"gpu", brand:"AMD", price:49995, price_old:54995,
+    rating:4.8, reviews:289, badge:"new", emoji:"❤️",
+    description:"RDNA 4 architecture with 16 GB GDDR6, Ray Accelerators 3.0, and AMD Fluid Motion Frames 2. Exceptional 1440p and 4K rasterization performance at mainstream pricing.",
+    specs:{ Architecture:"AMD RDNA 4", Compute_Units:"64", VRAM:"16 GB GDDR6", Memory_Bus:"256-bit", TDP:"304 W", Outputs:"2× DisplayPort 2.1, 1× HDMI 2.1", PSU_Req:"750 W", PCIe:"PCIe 5.0 ×16" }
+  },
+  {
+    id:8, sku:"TH-GPU-003", name:"NVIDIA GeForce RTX 5080",
+    img:"https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600&q=80",
+    category:"gpu", brand:"NVIDIA", price:69995, price_old:74995,
+    rating:4.9, reviews:367, badge:"hot", emoji:"⚡",
+    description:"RTX 5080 brings 10,752 CUDA Blackwell cores, 16 GB GDDR7, and Multi Frame Generation to the high-end tier at a more accessible price than the 5090.",
+    specs:{ Architecture:"NVIDIA Blackwell", CUDA_Cores:"10,752", VRAM:"16 GB GDDR7", Memory_Bus:"256-bit", TDP:"360 W", Outputs:"3× DisplayPort 2.1, 1× HDMI 2.1a", PSU_Req:"850 W", PCIe:"PCIe 5.0 ×16" }
+  },
+  {
+    id:9, sku:"TH-GPU-004", name:"NVIDIA GeForce RTX 5070 Ti",
+    img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&q=80",
+    category:"gpu", brand:"NVIDIA", price:54995, price_old:59990,
+    rating:4.8, reviews:214, badge:"sale", emoji:"🎯",
+    description:"Perfect 1440p and 4K GPU — 8,960 CUDA cores, 16 GB GDDR7, and DLSS 4 with Frame Generation. The sweet-spot card of 2025.",
+    specs:{ Architecture:"NVIDIA Blackwell", CUDA_Cores:"8,960", VRAM:"16 GB GDDR7", Memory_Bus:"256-bit", TDP:"300 W", Outputs:"3× DisplayPort 2.1, 1× HDMI 2.1a", PSU_Req:"750 W", PCIe:"PCIe 5.0 ×16" }
+  },
+
+  /* ───── CPUs ───── */
+  {
+    id:10, sku:"TH-CPU-001", name:"Intel Core Ultra 9 285K",
+    img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
+    category:"cpu", brand:"Intel", price:29995, price_old:32995,
+    rating:4.8, reviews:431, badge:"top", emoji:"🧠",
+    description:"Arrow Lake desktop flagship — 24 cores (8P+16E), 5.7 GHz boost, Intel Thread Director 2.0, and a built-in NPU with 13 TOPS for AI workloads. LGA 1851 socket.",
+    specs:{ Cores:"24 (8P+16E)", Boost_Clock:"5.7 GHz", Base_Clock:"3.7 GHz", Cache:"36 MB L3", TDP:"125 W", Socket:"LGA 1851", Memory:"DDR5-6400 / LPDDR5X", PCIe:"PCIe 5.0" }
+  },
+  {
+    id:11, sku:"TH-CPU-002", name:"AMD Ryzen 9 9950X",
+    img:"https://images.unsplash.com/photo-1540829917886-91ab031b1764?w=600&q=80",
+    category:"cpu", brand:"AMD", price:34995, price_old:39990,
+    rating:4.9, reviews:378, badge:"hot", emoji:"🔴",
+    description:"Zen 5 architecture, 16 cores / 32 threads, 5.7 GHz boost, and 80 MB combined cache. The fastest desktop CPU for multi-threaded workloads in 2025.",
+    specs:{ Cores:"16C / 32T", Boost_Clock:"5.7 GHz", Base_Clock:"4.3 GHz", Cache:"80 MB (L2+L3)", TDP:"170 W", Socket:"AM5", Memory:"DDR5-5600", PCIe:"PCIe 5.0" }
+  },
+  {
+    id:12, sku:"TH-CPU-003", name:"AMD Ryzen 7 9800X3D",
+    img:"https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600&q=80",
+    category:"cpu", brand:"AMD", price:24995, price_old:27995,
+    rating:5.0, reviews:812, badge:"hot", emoji:"🏆",
+    description:"The world's best gaming CPU — 8 cores, 3D V-Cache stacked on Zen 5, and a 5.7 GHz boost. Destroys every game benchmark while staying within 120 W TDP.",
+    specs:{ Cores:"8C / 16T", Boost_Clock:"5.7 GHz", Base_Clock:"4.7 GHz", Cache:"104 MB (with 3D V-Cache)", TDP:"120 W", Socket:"AM5", Memory:"DDR5-5600", PCIe:"PCIe 5.0" }
+  },
+
+  /* ───── RAM ───── */
+  {
+    id:13, sku:"TH-RAM-001", name:"G.Skill Trident Z5 RGB 64 GB DDR5-8000",
+    img:"https://images.unsplash.com/photo-1562976540-1502c2145186?w=600&q=80",
+    category:"ram", brand:"G.Skill", price:18995, price_old:21995,
+    rating:4.8, reviews:196, badge:"new", emoji:"🟣",
+    description:"2×32 GB DDR5 kit clocked at 8000 MT/s with CL38 timings. High-density RGB heat spreader, XMP 3.0 / EXPO support, and validated on Intel Z890 and AMD X870E motherboards.",
+    specs:{ Capacity:"64 GB (2×32 GB)", Speed:"DDR5-8000 MT/s", Timings:"CL38-48-48-128", Voltage:"1.45 V", Profile:"XMP 3.0 / EXPO", Form_Factor:"DIMM", RGB:"Yes (addressable)", Warranty:"Lifetime" }
+  },
+  {
+    id:14, sku:"TH-RAM-002", name:"Corsair Dominator Titanium 32 GB DDR5-7200",
+    img:"https://images.unsplash.com/photo-1562976540-1502c2145186?w=600&q=80",
+    category:"ram", brand:"Corsair", price:11995, price_old:13490,
+    rating:4.7, reviews:143, badge:"sale", emoji:"🔵",
+    description:"32 GB (2×16 GB) DDR5-7200 with Corsair's signature Dominator Titanium aluminum fin heatspreader and DHX cooling technology. iCUE RGB, XMP 3.0.",
+    specs:{ Capacity:"32 GB (2×16 GB)", Speed:"DDR5-7200 MT/s", Timings:"CL34-42-42-84", Voltage:"1.40 V", Profile:"XMP 3.0", Form_Factor:"DIMM", RGB:"Yes (iCUE)", Warranty:"Lifetime" }
+  },
+
+  /* ───── STORAGE ───── */
+  {
+    id:15, sku:"TH-SSD-001", name:"Samsung 990 Pro 2 TB NVMe",
+    img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600&q=80",
+    category:"storage", brand:"Samsung", price:8495, price_old:9995,
+    rating:4.9, reviews:987, badge:"top", emoji:"💾",
+    description:"PCIe 4.0 NVMe SSD with sequential reads up to 7,450 MB/s and writes up to 6,900 MB/s. Samsung V-NAND 3-bit MLC and Nickel-coated controller for longevity.",
+    specs:{ Capacity:"2 TB", Interface:"PCIe 4.0 ×4 NVMe 2.0", Seq_Read:"7,450 MB/s", Seq_Write:"6,900 MB/s", Rand_Read:"1,550K IOPS", Rand_Write:"1,500K IOPS", NAND:"Samsung V-NAND 3-bit MLC", TBW:"1,200 TBW" }
+  },
+  {
+    id:16, sku:"TH-SSD-002", name:"WD Black SN850X 4 TB NVMe",
+    img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600&q=80",
+    category:"storage", brand:"Western Digital", price:14995, price_old:16995,
+    rating:4.8, reviews:432, badge:"new", emoji:"⬛",
+    description:"PCIe 4.0 SSD with 4 TB capacity — WD's densest consumer NVMe. Up to 7,300 MB/s sequential read with game-mode optimization for PC Gaming.",
+    specs:{ Capacity:"4 TB", Interface:"PCIe 4.0 ×4 NVMe 2.0", Seq_Read:"7,300 MB/s", Seq_Write:"7,100 MB/s", Cache:"Dynamic nCache 4.0", NAND:"3D TLC NAND", TBW:"2,400 TBW", Warranty:"5 years" }
+  },
+
+  /* ───── MONITORS ───── */
+  {
+    id:17, sku:"TH-MON-001", name:"LG UltraGear 27GX790A OLED 27\"",
+    img:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80",
+    category:"monitor", brand:"LG", price:54995, price_old:59995,
+    rating:4.9, reviews:324, badge:"hot", emoji:"🖥️",
+    description:"27-inch QHD OLED gaming monitor running at 480 Hz. 0.03 ms GtG response, DisplayHDR TrueBlack 400, NVIDIA G-SYNC Compatible, AMD FreeSync Premium Pro.",
+    specs:{ Panel:"27\" WOLED", Resolution:"2560×1440 (QHD)", Refresh_Rate:"480 Hz", Response:"0.03 ms GtG", HDR:"DisplayHDR TrueBlack 400", Color:"98.5% DCI-P3", Sync:"G-SYNC / FreeSync Premium Pro", Inputs:"2× DP 1.4, 2× HDMI 2.1, USB-C" }
+  },
+  {
+    id:18, sku:"TH-MON-002", name:"Samsung Odyssey OLED G9 49\"",
+    img:"https://images.unsplash.com/photo-1585792180666-f7347c490ee2?w=600&q=80",
+    category:"monitor", brand:"Samsung", price:109990, price_old:119990,
+    rating:4.7, reviews:178, badge:"top", emoji:"🌊",
+    description:"49-inch dual QHD ultrawide OLED at 240 Hz. 1800R curve, 1 ms response, DisplayHDR 400 True Black, and a built-in KVM switch for multi-device productivity.",
+    specs:{ Panel:"49\" OLED 1800R Curved", Resolution:"5120×1440 (Dual QHD)", Refresh_Rate:"240 Hz", Response:"0.03 ms", HDR:"DisplayHDR 400 True Black", Color:"99% DCI-P3", Sync:"G-SYNC / FreeSync Premium Pro", Inputs:"2× DP 1.4, 2× HDMI 2.1" }
+  },
+  {
+    id:19, sku:"TH-MON-003", name:"ASUS ROG Swift PG27UCDM 4K OLED",
+    img:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80",
+    category:"monitor", brand:"ASUS", price:89990, price_old:94990,
+    rating:4.8, reviews:209, badge:"new", emoji:"🎯",
+    description:"27-inch 4K OLED gaming monitor at 240 Hz with true 10-bit color, 0.03 ms response, and ASUS Smart KVM. NVIDIA G-SYNC Ultimate certified.",
+    specs:{ Panel:"27\" OLED", Resolution:"3840×2160 (4K UHD)", Refresh_Rate:"240 Hz", Response:"0.03 ms GtG", HDR:"G-SYNC Ultimate HDR", Color:"99% DCI-P3 10-bit", Sync:"G-SYNC Ultimate", Inputs:"DP 1.4, 2× HDMI 2.1, USB-C 90W" }
+  },
+
+  /* ───── KEYBOARDS ───── */
+  {
+    id:20, sku:"TH-KBD-001", name:"Wooting 60HE+ (Magnetic Hall Effect)",
+    img:"https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&q=80",
+    category:"keyboard", brand:"Wooting", price:9995, price_old:10995,
+    rating:5.0, reviews:1024, badge:"top", emoji:"⌨️",
+    description:"The Wooting 60HE+ uses Lekker Hall Effect analog switches for per-key actuation adjustment (0.1–4.0 mm), Rapid Trigger as low as 0.1 mm, and zero debounce. The gold standard for competitive FPS.",
+    specs:{ Layout:"60% (61-key)", Switch:"Lekker Hall Effect L45", Actuation:"Adjustable 0.1–4.0 mm", Rapid_Trigger:"0.1 mm minimum", Polling_Rate:"8000 Hz", Connectivity:"USB-C (detachable)", RGB:"Per-key RGB", Hot_Swap:"No (Hall Effect)" }
+  },
+  {
+    id:21, sku:"TH-KBD-002", name:"Keychron Q1 Max (QMK/VIA Wireless)",
+    img:"https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&q=80",
+    category:"keyboard", brand:"Keychron", price:8495, price_old:9495,
+    rating:4.8, reviews:743, badge:"new", emoji:"🎹",
+    description:"Full gasket-mount 75% keyboard with QMK/VIA support, Bluetooth 5.1 triple-device, 2.4 GHz dongle, and double-shot PBT keycaps. CNC aluminum body.",
+    specs:{ Layout:"75% (87-key)", Switch:"Gateron G Pro 3.0 (choice)", Polling_Rate:"1000 Hz (wired) / 125 Hz (BT)", Connectivity:"Bluetooth 5.1 + 2.4 GHz + USB-C", Battery:"4,000 mAh", RGB:"South-facing per-key RGB", Programming:"QMK / VIA", Gasket:"Full gasket mount" }
+  },
+
+  /* ───── MICE ───── */
+  {
+    id:22, sku:"TH-MSE-001", name:"Lamzu Atlantis Mini Pro V2",
+    img:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&q=80",
+    category:"mouse", brand:"Lamzu", price:4995, price_old:5495,
+    rating:4.9, reviews:631, badge:"top", emoji:"🖱️",
+    description:"58 g wireless gaming mouse with PixArt PAW3950 sensor, 8000 Hz polling, 26 K DPI, 95-hour battery, and buttery 8-hole honeycomb shell.",
+    specs:{ Sensor:"PixArt PAW3950", DPI:"100–26,000", Polling_Rate:"8000 Hz (wireless)", Weight:"58 g", Battery:"95 hr", Connectivity:"2.4 GHz + USB-C wired", Buttons:"5 programmable", Feet:"PTFE pure white" }
+  },
+  {
+    id:23, sku:"TH-MSE-002", name:"Logitech G Pro X Superlight 3",
+    img:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&q=80",
+    category:"mouse", brand:"Logitech", price:6495, price_old:6995,
+    rating:4.8, reviews:878, badge:"hot", emoji:"🏁",
+    description:"HERO 3 sensor, 60 g weight, 300-hour battery, 8000 DPI, zero smoothing, filtering, and acceleration. The go-to esports mouse of 2025.",
+    specs:{ Sensor:"HERO 3 (proprietary)", DPI:"100–8,000", Polling_Rate:"2000 Hz", Weight:"60 g", Battery:"300 hr", Connectivity:"LIGHTSPEED 2.4 GHz", Buttons:"5 programmable", IPS:"500 IPS" }
+  },
+  {
+    id:24, sku:"TH-MSE-003", name:"Razer DeathAdder V3 Pro",
+    img:"https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&q=80",
+    category:"mouse", brand:"Razer", price:5995, price_old:6995,
+    rating:4.7, reviews:556, badge:"sale", emoji:"🐍",
+    description:"Classic ergonomic right-hand shape, 90-hour wireless endurance, Focus Pro 30K optical sensor, and HyperSpeed Wireless. 64 g lightweight body.",
+    specs:{ Sensor:"Razer Focus Pro 30K", DPI:"100–30,000", Polling_Rate:"4000 Hz", Weight:"64 g", Battery:"90 hr", Connectivity:"HyperSpeed 2.4 GHz + USB-C", Buttons:"6 programmable", IPS:"750 IPS" }
+  },
+
+  /* ───── HEADSETS ───── */
+  {
+    id:25, sku:"TH-HDS-001", name:"SteelSeries Arctis Nova Pro Wireless X",
+    img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
+    category:"headset", brand:"SteelSeries", price:17995, price_old:19995,
+    rating:4.9, reviews:412, badge:"top", emoji:"🎧",
+    description:"Flagship wireless gaming headset — dual-wireless (2.4 GHz + Bluetooth), hot-swap battery system, ANC, Hi-Res audio certification, and a premium GameDAC Gen 2.",
+    specs:{ Driver:"40 mm High-Fidelity", Frequency:"10–40,000 Hz (Hi-Res)", ANC:"Adaptive ANC + Transparency", Connectivity:"2.4 GHz + Bluetooth 5.0", Battery:"Dual hot-swap 36 hr each", Microphone:"Retractable ClearCast Gen 2", DAC:"GameDAC Gen 2 included", Weight:"338 g" }
+  },
+  {
+    id:26, sku:"TH-HDS-002", name:"HyperX Cloud Alpha Wireless",
+    img:"https://images.unsplash.com/photo-1583394293214-0d3f6a147f07?w=600&q=80",
+    category:"headset", brand:"HyperX", price:9995, price_old:11995,
+    rating:4.8, reviews:734, badge:"sale", emoji:"👑",
+    description:"Industry-record 300-hour wireless battery life on a single charge, dual-chamber drivers, and plush memory foam ear cushions.",
+    specs:{ Driver:"50 mm Dual-chamber", Frequency:"15–21,000 Hz", ANC:"No", Connectivity:"2.4 GHz USB", Battery:"300 hr", Microphone:"Detachable noise-cancelling", Weight:"335 g", Warranty:"2 years" }
+  },
+
+  /* ───── COOLING ───── */
+  {
+    id:27, sku:"TH-COL-001", name:"ARCTIC Liquid Freezer III 360",
+    img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&q=80",
+    category:"cooling", brand:"ARCTIC", price:6995, price_old:7995,
+    rating:4.9, reviews:389, badge:"top", emoji:"❄️",
+    description:"360 mm AIO with ARCTIC P12 PWM fans, VRM cooling fan, and single-port pump head. Compatible with Intel LGA 1700/1851 and AMD AM4/AM5. The performance-per-peso king.",
+    specs:{ Type:"360 mm AIO Liquid Cooler", Fans:"3× 120 mm ARCTIC P12 PWM", Pump:"4th-gen dual-impeller", Socket:"Intel LGA 1700/1851, AMD AM4/AM5", Fan_Speed:"200–2,000 RPM", Noise:"0.35 Sone", TDP_Rating:"700 W+", Warranty:"6 years" }
+  },
+  {
+    id:28, sku:"TH-COL-002", name:"Noctua NH-D15 G2 (2025 Edition)",
+    img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&q=80",
+    category:"cooling", brand:"Noctua", price:9495, price_old:null,
+    rating:5.0, reviews:521, badge:"new", emoji:"🦉",
+    description:"Noctua's legendary dual-tower redesigned for LGA 1851 and AM5. Asymmetric D15 layout, dual NF-A15x25 fans, and SecuFirm3+ mounting — handles any desktop CPU.",
+    specs:{ Type:"Dual-tower Air Cooler", Fans:"2× 140 mm NF-A15x25 G2", Fan_Speed:"300–1,500 RPM", Noise:"19.2 dBA max", Socket:"Intel LGA 1851/1700, AMD AM5/AM4", Height:"168 mm", TDP_Rating:"350 W+", Warranty:"6 years" }
+  }
+];
+
+/* ============================================================
+   APP STATE
+============================================================ */
+let products      = [];
+let filtered      = [];
+let activeFilter  = "all";
+let activeSort    = "default";
+let currentProduct= null;
+let cart          = JSON.parse(localStorage.getItem("TechyHubCart")) || [];
+let wishlist      = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+  updateCartBadge();
+  await initSupabase();
+  await loadProducts();
+});
+
+async function loadProducts() {
+  if (useSupabase) {
+    try {
+      const { data, error } = await supabaseClient.from("products").select("*").order("id");
+      if (error) throw error;
+      products = data.map(row => ({ ...row, specs: row.specs || {} }));
+    } catch (e) {
+      products = LOCAL_PRODUCTS;
+    }
+  } else {
+    products = LOCAL_PRODUCTS;
+  }
+  filtered = [...products];
+  renderGrid();
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function renderGrid() {
+  const grid  = document.getElementById("productGrid");
+  const empty = document.getElementById("emptyState");
+  const count = document.getElementById("productCount");
+  const title = document.getElementById("sectionTitle");
+
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    empty.classList.add("visible");
+    count.textContent = "0 products";
+    return;
+  }
+
+  empty.classList.remove("visible");
+  count.textContent = filtered.length + " product" + (filtered.length !== 1 ? "s" : "");
+  title.textContent = activeFilter === "all"
+    ? "All Products"
+    : activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1) + "s";
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.style.animationDelay = (i * 0.04) + "s";
+
+    const stars     = renderStars(p.rating);
+    const badgeHTML = p.badge ? `<span class="badge badge-${p.badge}">${p.badge}</span>` : "";
+    const inWish    = wishlist.includes(p.name);
+    const oldPrice  = p.price_old ? `<span class="card-price-old">₱${p.price_old.toLocaleString()}</span>` : "";
+
+    // Image: real photo if available, emoji fallback otherwise
+    const imgHTML = p.img
+      ? `<img class="card-img" src="${p.img}" alt="${p.name}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : "";
+    const fallbackStyle = p.img ? 'style="display:none"' : '';
+
+    card.innerHTML = `
+      ${badgeHTML}
+      <button class="wishlist-btn ${inWish ? 'in-wishlist' : ''}"
+        onclick="event.stopPropagation(); toggleWishlist(${p.id})" title="Wishlist">
+        ${inWish ? '♥' : '♡'}
+      </button>
+      <div class="card-img-wrap">
+        ${imgHTML}
+        <div class="card-img-fallback" ${fallbackStyle}>${p.emoji || '📦'}</div>
+        <div class="card-overlay">
+          <button class="overlay-btn overlay-btn-primary"
+            onclick="event.stopPropagation(); openProductModal(${p.id})">
+            🔍 View Details
+          </button>
+          <button class="overlay-btn overlay-btn-secondary"
+            onclick="event.stopPropagation(); quickAddToCart(${p.id})">
+            🛒 Quick Add
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-category">${p.category}</p>
+        <h3 class="card-title">${p.name}</h3>
+        <p class="card-sku">SKU: ${p.sku}</p>
+        <div class="card-stars">${stars}<span>(${p.reviews})</span></div>
+        <div class="card-price-row">
+          <span class="card-price">₱${p.price.toLocaleString()}</span>
+          ${oldPrice}
+        </div>
+        <button class="card-add-btn" onclick="event.stopPropagation(); quickAddToCart(${p.id})">
+          🛒 Add to Cart
+        </button>
+      </div>
+    `;
+
+    card.addEventListener("click", () => openProductModal(p.id));
+    grid.appendChild(card);
+  });
+}
+
+function renderStars(rating) {
+  const full  = Math.floor(rating);
+  const half  = rating % 1 >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(empty);
+}
+
+/* ============================================================
+   FILTER + SORT
+============================================================ */
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyFiltersSort();
+}
+
+function filterProducts() { applyFiltersSort(); }
+function sortProducts()   { activeSort = document.getElementById("sortSelect").value; applyFiltersSort(); }
+
+function applyFiltersSort() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+
+  filtered = products.filter(p => {
+    const matchCat = activeFilter === "all" || p.category === activeFilter;
+    const matchQ   = !q ||
+      p.name.toLowerCase().includes(q) ||
+      p.brand?.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.sku.toLowerCase().includes(q) ||
+      Object.values(p.specs || {}).some(v => String(v).toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+
+  if (activeSort === "price-asc")  filtered.sort((a,b) => a.price - b.price);
+  if (activeSort === "price-desc") filtered.sort((a,b) => b.price - a.price);
+  if (activeSort === "rating")     filtered.sort((a,b) => b.rating - a.rating);
+  if (activeSort === "name")       filtered.sort((a,b) => a.name.localeCompare(b.name));
+
+  renderGrid();
+}
+
+/* ============================================================
+   PRODUCT MODAL
+============================================================ */
+function openProductModal(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+
+  document.getElementById("modalCategory").textContent    = p.category;
+  document.getElementById("modalTitle").textContent       = p.name;
+  document.getElementById("modalSKU").textContent         = "SKU: " + p.sku + " | Brand: " + (p.brand || "—");
+  document.getElementById("modalStars").textContent       = renderStars(p.rating);
+  document.getElementById("modalReviews").textContent     = `${p.rating}/5 · ${p.reviews} reviews`;
+  document.getElementById("modalPrice").textContent       = "₱" + p.price.toLocaleString();
+  document.getElementById("modalPriceOld").textContent    = p.price_old ? "₱" + p.price_old.toLocaleString() : "";
+  document.getElementById("modalDescription").textContent = p.description || "";
+
+  // Modal image: inject real photo or show emoji fallback
+  const imgSide = document.getElementById("modalImgSide");
+  const fallback = document.getElementById("modalImgFallback");
+  const prevImg  = imgSide.querySelector(".modal-real-img");
+  if (prevImg) prevImg.remove();
+
+  if (p.img) {
+    const imgEl = document.createElement("img");
+    imgEl.src       = p.img;
+    imgEl.alt       = p.name;
+    imgEl.className = "modal-real-img";
+    imgEl.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9;";
+    imgEl.onerror = () => { imgEl.remove(); fallback.textContent = p.emoji || "📦"; };
+    imgSide.appendChild(imgEl);
+    fallback.textContent = "";
+  } else {
+    fallback.textContent = p.emoji || "📦";
+  }
+
+  // Badge
+  const badgeEl = document.getElementById("modalBadge");
+  badgeEl.innerHTML = p.badge
+    ? `<span class="badge badge-${p.badge}" style="position:relative;top:0;left:0;">${p.badge}</span>`
+    : "";
+
+  // Specs
+  const specsEl = document.getElementById("modalSpecs");
+  specsEl.innerHTML = "";
+  if (p.specs) {
+    Object.entries(p.specs).forEach(([k, v]) => {
+      const row = document.createElement("div");
+      row.className = "spec-row";
+      row.innerHTML = `
+        <span class="spec-key">${k.replace(/_/g," ")}</span>
+        <span class="spec-val">${v}</span>
+      `;
+      specsEl.appendChild(row);
+    });
+  }
+
+  document.getElementById("productModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeProductModal() {
+  document.getElementById("productModal").classList.remove("open");
+  document.body.style.overflow = "";
+  currentProduct = null;
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById("productModal")) closeProductModal();
+}
+
+function addFromModal()  { if (!currentProduct) return; addToCartById(currentProduct.id); closeProductModal(); }
+function wishFromModal() { if (!currentProduct) return; toggleWishlist(currentProduct.id); }
+
+/* ============================================================
+   CART
+============================================================ */
+function quickAddToCart(id) { addToCartById(id); }
+
+function addToCartById(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  cart.push({ name: p.name, price: p.price });
+  localStorage.setItem("TechyHubCart", JSON.stringify(cart));
+  updateCartBadge();
+  toast("🛒 " + p.name + " added to cart!", "success");
+}
+
+function updateCartBadge() {
+  const el = document.getElementById("cartCount");
+  if (el) el.textContent = cart.length;
+}
+
+/* ============================================================
+   WISHLIST
+============================================================ */
+function toggleWishlist(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const idx = wishlist.indexOf(p.name);
+  if (idx === -1) {
+    wishlist.push(p.name);
+    toast("♥ " + p.name + " added to wishlist!", "info");
+  } else {
+    wishlist.splice(idx, 1);
+    toast("💔 " + p.name + " removed from wishlist.", "info");
+  }
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  renderGrid();
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function toast(msg, type="info") {
+  const container = document.getElementById("toastContainer");
+  const el = document.createElement("div");
+  el.className = "toast";
+  const colors = { success:"var(--success)", error:"var(--danger)", info:"var(--accent2)" };
+  el.style.borderColor = colors[type] || colors.info;
+  el.innerHTML = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+/* ============================================================
+   KEYBOARD ESC to close modal
+============================================================ */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeProductModal();
+});
+</script>
+</body>
+</html>
