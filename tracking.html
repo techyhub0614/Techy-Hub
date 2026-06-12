@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechyHub - Order Tracking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/script.js"></script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/techhublogo.jpg" alt="TechyHub Logo" style="height:38px;width:38px;object-fit:contain;border-radius:8px;vertical-align:middle;margin-right:8px;">TechyHub
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="tracking.html" class="active">Tracking</a></li>
+            <li><a href="wishlist.html">Wishlist ❤️</a></li>
+            <li><a href="cart.html">Cart 🛒 <span id="cartCount" style="background:red;color:white;border-radius:50%;padding:2px 7px;font-size:12px;">0</span></a></li>
+        </ul>
+        <div class="nav-auth">
+            <a href="profile.html" class="nav-profile-btn">👤 Profile</a>
+            <a href="login.html" class="nav-login-btn">Login</a>
+        </div>
+        <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+    </nav>
+</header>
+
+<section class="tracking-page">
+
+    <h1>🚚 Order Tracking</h1>
+    <p>Enter the Order ID you received after checkout to track your order.</p>
+
+    <div class="tracking-form">
+        <input
+            type="text"
+            id="trackingNumber"
+            placeholder="Enter Order ID (e.g. ORD-1234567890)"
+        >
+        <button onclick="trackOrder()">Track Order</button>
+    </div>
+
+    <div id="trackingResult"></div>
+
+    <!-- Past orders pulled from localStorage -->
+    <div id="myOrdersSection" style="margin-top:40px;display:none;">
+        <h3>🧾 Your Recent Orders</h3>
+        <table class="sku-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product(s)</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="myOrdersBody"></tbody>
+        </table>
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2026 TechyHub. All Rights Reserved.</p>
+</footer>
+
+<button id="topBtn" onclick="scrollToTop()">↑</button>
+
+<script>
+/* ============================================================
+   ORDER STATUS TIMELINE
+   - 0–1 day after order date  -> Processing 📦
+   - 2–3 days after order date -> Shipped 🚛
+   - 4–5 days after order date -> Out for Delivery 🛵
+   - 6+ days after order date  -> Delivered ✅
+============================================================ */
+const STATUS_STEPS = [
+    { label: "Processing",       emoji: "📦", minDay: 0 },
+    { label: "Shipped",          emoji: "🚛", minDay: 2 },
+    { label: "Out for Delivery", emoji: "🛵", minDay: 4 },
+    { label: "Delivered",        emoji: "✅", minDay: 6 }
+];
+
+// Calculate how many full days have passed since the order date
+function getDaysSinceOrder(orderDate) {
+    const ordered = new Date(orderDate);
+    const now     = new Date();
+
+    // Normalize both to midnight so partial-day differences don't skip a step early
+    ordered.setHours(0,0,0,0);
+    now.setHours(0,0,0,0);
+
+    const diffMs   = now - ordered;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
+}
+
+// Determine the current status based on the order date
+function getStatusForOrder(order) {
+    // If the order has no date (older saved orders), fall back to its stored status
+    if (!order.date) {
+        return order.status || "Processing 📦";
+    }
+
+    const daysPassed = getDaysSinceOrder(order.date);
+
+    let current = STATUS_STEPS[0];
+    for (const step of STATUS_STEPS) {
+        if (daysPassed >= step.minDay) current = step;
+    }
+    return `${current.label} ${current.emoji}`;
+}
+
+// Get the index of the current step (for progress bar rendering)
+function getStatusStepIndex(order) {
+    if (!order.date) return 0;
+    const daysPassed = getDaysSinceOrder(order.date);
+    let idx = 0;
+    STATUS_STEPS.forEach((step, i) => {
+        if (daysPassed >= step.minDay) idx = i;
+    });
+    return idx;
+}
+
+/* ============================================================
+   LOAD AND DISPLAY USER'S ORDERS
+============================================================ */
+function loadMyOrders() {
+    const orders = JSON.parse(localStorage.getItem("TechyHubOrders")) || [];
+    if (orders.length === 0) return;
+
+    const section = document.getElementById("myOrdersSection");
+    const tbody   = document.getElementById("myOrdersBody");
+    section.style.display = "block";
+
+    tbody.innerHTML = [...orders].reverse().map(o => {
+        const productList = o.items.map(i => i.name).join(", ");
+        const status      = getStatusForOrder(o);
+        return `
+            <tr>
+                <td><strong>${o.id}</strong></td>
+                <td>${productList}</td>
+                <td>${status}</td>
+                <td>
+                    <button onclick="quickTrack('${o.id}')" style="
+                        background:#3b82f6;color:white;border:none;
+                        padding:5px 12px;border-radius:6px;cursor:pointer;
+                        font-weight:600;font-size:0.8rem;">
+                        Track
+                    </button>
+                </td>
+            </tr>`;
+    }).join("");
+}
+
+function quickTrack(id) {
+    document.getElementById("trackingNumber").value = id;
+    trackOrder();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ============================================================
+   TRACK ORDER — shows progress timeline based on order date
+============================================================ */
+function trackOrder() {
+    const input  = document.getElementById("trackingNumber").value.trim();
+    const result = document.getElementById("trackingResult");
+
+    if (!input) {
+        result.innerHTML = `<p style="color:#ef4444;margin-top:20px;">Please enter an Order ID.</p>`;
+        return;
+    }
+
+    const orders = JSON.parse(localStorage.getItem("TechyHubOrders")) || [];
+    const order  = orders.find(o => o.id.toLowerCase() === input.toLowerCase());
+
+    if (!order) {
+        result.innerHTML = `
+            <div style="margin-top:20px;padding:20px;border:1px solid #ef4444;border-radius:10px;">
+                <p style="color:#ef4444;font-weight:600;">⚠️ No order found with ID "${input}".</p>
+                <p style="margin-top:6px;">Please check the Order ID and try again.</p>
+            </div>`;
+        return;
+    }
+
+    const currentIdx  = getStatusStepIndex(order);
+    const productList = order.items.map(i => i.name).join(", ");
+    const orderDate   = order.date ? new Date(order.date).toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" }) : "—";
+
+    const timelineHTML = STATUS_STEPS.map((step, i) => {
+        const reached = i <= currentIdx;
+        return `
+            <div style="flex:1;text-align:center;position:relative;">
+                <div style="
+                    width:36px;height:36px;border-radius:50%;
+                    margin:0 auto 8px;display:flex;align-items:center;justify-content:center;
+                    font-size:1.1rem;
+                    background:${reached ? '#22c55e' : '#334155'};
+                    color:white;
+                    transition:background .3s;">
+                    ${step.emoji}
+                </div>
+                <div style="font-size:0.8rem;font-weight:600;color:${reached ? '#22c55e' : '#94a3b8'};">
+                    ${step.label}
+                </div>
+            </div>`;
+    }).join(`
+            <div style="flex:0.4;align-self:flex-start;margin-top:18px;height:2px;background:#334155;"></div>`);
+
+    result.innerHTML = `
+        <div style="margin-top:20px;padding:24px;border:1px solid var(--border-glow,#6366f1);border-radius:12px;">
+            <p><strong>Order ID:</strong> ${order.id}</p>
+            <p><strong>Order Date:</strong> ${orderDate}</p>
+            <p><strong>Item(s):</strong> ${productList}</p>
+            <p style="margin-bottom:20px;"><strong>Current Status:</strong> ${getStatusForOrder(order)}</p>
+            <div style="display:flex;align-items:flex-start;gap:0;">
+                ${timelineHTML}
+            </div>
+        </div>`;
+}
+
+// Allow Enter key
+document.getElementById("trackingNumber").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") trackOrder();
+});
+
+// On load — show recent orders table
+window.addEventListener("DOMContentLoaded", loadMyOrders);
+</script>
+
+</body>
+</html>
